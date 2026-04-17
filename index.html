@@ -162,8 +162,8 @@ select option{background:var(--bg-secondary);}
     <div id="config-banner" class="config-banner hidden">
       <span>💾 Se encontró una configuración guardada.</span>
       <div class="config-banner-actions">
-        <button class="btn" onclick="restoreConfig()">↩️ Restaurar</button>
-        <button class="btn" onclick="clearSavedConfig()">🗑️ Descartar</button>
+        <button class="btn" onclick="restoreConfig()" aria-label="Restaurar configuración guardada">↩️ Restaurar</button>
+        <button class="btn" onclick="clearSavedConfig()" aria-label="Descartar configuración guardada">🗑️ Descartar</button>
       </div>
     </div>
 
@@ -1494,7 +1494,8 @@ function renderSummary(cfg){
 // ══════════════════════════════════════════════════════════════
 // COPY
 // ══════════════════════════════════════════════════════════════
-function copyPrompt(){  if(!window._lastPrompt) return;
+function copyPrompt(){
+  if(!window._lastPrompt) return;
   navigator.clipboard.writeText(window._lastPrompt).then(()=>{
     const btn=document.getElementById('copyBtn');
     btn.textContent='✅ Copiado!';
@@ -1598,10 +1599,10 @@ function validateForm(){
 // ══════════════════════════════════════════════════════════════
 const LS_KEY='qaPromptConfig_v2';
 function saveConfig(cfg){
-  try{localStorage.setItem(LS_KEY,JSON.stringify(cfg));}catch(e){}
+  try{localStorage.setItem(LS_KEY,JSON.stringify(cfg));}catch(e){console.warn('Failed to save config to localStorage:',e);}
 }
 function loadSavedConfig(){
-  try{return JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(e){return null;}
+  try{return JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(e){localStorage.removeItem(LS_KEY);console.warn('Cleared corrupted config from localStorage:',e);return null;}
 }
 function clearSavedConfig(){
   localStorage.removeItem(LS_KEY);
@@ -1683,7 +1684,7 @@ function initApp(){
 function downloadPrompt(){
   if(!window._lastPrompt) return;
   const fileName=(window._lastConfig&&window._lastConfig.projectName
-    ?window._lastConfig.projectName.replace(/[^a-zA-Z0-9_-]/g,'-')
+    ?window._lastConfig.projectName.replace(/[^a-zA-Z0-9_-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')
     :'qa-prompt')+'-prompt.md';
   const blob=new Blob([window._lastPrompt],{type:'text/markdown;charset=utf-8'});
   const url=URL.createObjectURL(blob);
