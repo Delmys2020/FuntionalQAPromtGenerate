@@ -119,6 +119,13 @@ select option{background:var(--bg-secondary);}
 .badge-orange{background:rgba(255,166,87,.15);color:var(--orange);}
 .badge-purple{background:rgba(188,140,255,.15);color:var(--purple);}
 .char-counter{font-size:11px;color:var(--text-secondary);text-align:right;margin-top:3px;}
+/* Field validation */
+.form-group.has-error input,.form-group.has-error textarea,.form-group.has-error select{border-color:var(--danger);box-shadow:0 0 0 3px rgba(248,81,73,.12);}
+.field-error{font-size:11px;color:var(--danger);margin-top:3px;display:none;}
+.form-group.has-error .field-error{display:block;}
+/* Config persistence banner */
+.config-banner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 16px;background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.18);border-radius:var(--radius);margin-bottom:16px;font-size:12px;color:var(--text-secondary);}
+.config-banner-actions{display:flex;gap:8px;}
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:var(--bg-secondary);}
@@ -152,6 +159,13 @@ select option{background:var(--bg-secondary);}
 <main>
   <div class="container">
     <div id="alert-container"></div>
+    <div id="config-banner" class="config-banner hidden">
+      <span>💾 Se encontró una configuración guardada.</span>
+      <div class="config-banner-actions">
+        <button class="btn" onclick="restoreConfig()" aria-label="Restaurar configuración guardada">↩️ Restaurar</button>
+        <button class="btn" onclick="clearSavedConfig()" aria-label="Descartar configuración guardada">🗑️ Descartar</button>
+      </div>
+    </div>
 
     <div class="accordion" id="accordion">
 
@@ -169,6 +183,7 @@ select option{background:var(--bg-secondary);}
             <div class="form-group">
               <label for="projectName">Nombre Exacto del Proyecto<span class="req">*</span></label>
               <input type="text" id="projectName" placeholder="BancoDigital-Web-Automation" autocomplete="off">
+              <span class="field-error" id="err-projectName">El nombre del proyecto es obligatorio.</span>
               <span class="hint">Ejemplo: EcommercePro-QA, BancaMovil-Regression, HospitalApp-E2E</span>
             </div>
             <div class="form-group">
@@ -377,6 +392,133 @@ select option{background:var(--bg-secondary);}
 
     </div><!-- /accordion -->
 
+      <!-- Sec 7: Entorno y Calidad -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleSection(this)">
+          <div class="acc-header-left">
+            <span class="acc-num">7</span>
+            🌐 Entorno, Calidad y Restricciones
+          </div>
+          <span class="acc-chevron">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="baseUrl">URL Base de la Aplicación bajo Prueba</label>
+              <input type="text" id="baseUrl" placeholder="https://qa.miapp.com">
+              <span class="hint">Reemplaza placeholders genéricos en configuraciones y hooks generados.</span>
+            </div>
+            <div class="form-group">
+              <label for="authType">Tipo de Autenticación</label>
+              <select id="authType">
+                <option value="none">Sin autenticación especial</option>
+                <option value="basic">Basic Auth (usuario/contraseña)</option>
+                <option value="jwt">JWT / Bearer Token</option>
+                <option value="oauth2">OAuth 2.0 (Authorization Code / PKCE)</option>
+                <option value="sso">SSO / SAML</option>
+                <option value="apikey">API Key (header/query)</option>
+              </select>
+              <span class="hint">Impacta hooks, steps de autenticación y configuración de sesión.</span>
+            </div>
+            <div class="form-group">
+              <label for="credentialStrategy">Estrategia de Credenciales de Prueba</label>
+              <select id="credentialStrategy">
+                <option value="env-vars">Variables de entorno (.env / CI secrets)</option>
+                <option value="vault">HashiCorp Vault / Azure Key Vault</option>
+                <option value="encrypted-file">Archivo cifrado (Jasypt / AWS KMS)</option>
+                <option value="test-properties">Archivo de propiedades de prueba (no producción)</option>
+              </select>
+              <span class="hint">Determina cómo se gestionan secretos en el proyecto generado.</span>
+            </div>
+            <div class="form-group">
+              <label for="testDataSource">Fuente de Datos de Prueba</label>
+              <select id="testDataSource">
+                <option value="faker">Faker / Datos dinámicos (recomendado)</option>
+                <option value="json-yaml">Archivos JSON/YAML estáticos</option>
+                <option value="mock">Mock server (WireMock / MSW)</option>
+                <option value="db">Base de datos de prueba</option>
+                <option value="api-seed">API seed / Setup endpoints</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="functionalModules">Módulos Funcionales del Sistema</label>
+              <textarea id="functionalModules" rows="3" placeholder="login, registro-usuarios, pagos, transferencias, gestion-cuentas, reportes"></textarea>
+              <span class="hint">Lista de módulos separados por coma. Permite generar features específicos por módulo (en vez de solo ejemplos de login).</span>
+            </div>
+            <div class="form-group full" id="envUrlsGroup">
+              <label for="envUrls">URLs por Ambiente</label>
+              <textarea id="envUrls" rows="4" placeholder="dev=https://dev.miapp.com&#10;qa=https://qa.miapp.com&#10;staging=https://staging.miapp.com&#10;prod=https://prod.miapp.com"></textarea>
+              <span class="hint">Formato: ambiente=URL (una por línea). Genera configuración real sin placeholders por ambiente.</span>
+            </div>
+            <div class="form-group">
+              <label for="screenshotPolicy">Política de Screenshots</label>
+              <select id="screenshotPolicy">
+                <option value="on-failure">Solo en falla (recomendado)</option>
+                <option value="always">Siempre (cada escenario)</option>
+                <option value="never">Nunca</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="defectsIntegration">Integración con Gestión de Defectos</label>
+              <select id="defectsIntegration">
+                <option value="none">Sin integración</option>
+                <option value="jira">Jira (anotaciones en reportes)</option>
+                <option value="azure-devops">Azure DevOps (work items)</option>
+                <option value="github-issues">GitHub Issues</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="namingConvention">Convención de Nomenclatura del Equipo</label>
+              <select id="namingConvention">
+                <option value="camelCase">camelCase (métodos Java estándar)</option>
+                <option value="PascalCase">PascalCase (clases Java/Kotlin)</option>
+                <option value="snake_case">snake_case (Python estándar)</option>
+                <option value="kebab-case">kebab-case (archivos y carpetas)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="minBrowserVersion">Versión Mínima del Navegador Objetivo</label>
+              <input type="text" id="minBrowserVersion" placeholder="Chrome 120+, Firefox 121+, Edge 120+">
+              <span class="hint">Para configurar correctamente Playwright/Selenium y matrices de CI.</span>
+            </div>
+            <div class="form-group">
+              <label for="coverageThreshold">Cobertura Mínima Esperada (%)</label>
+              <input type="number" id="coverageThreshold" value="80" min="0" max="100">
+              <span class="hint">Umbral de éxito en el pipeline CI/CD. Si no se supera, el build falla.</span>
+            </div>
+          </div>
+          <!-- Timeouts personalizados -->
+          <div style="margin-top:16px;">
+            <label style="font-size:13px;color:var(--text-secondary);font-weight:500;display:block;margin-bottom:10px;">⏱️ Timeouts Personalizados (ms)</label>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="timeoutPage">Carga de Página</label>
+                <input type="number" id="timeoutPage" value="30000" min="1000" step="1000">
+              </div>
+              <div class="form-group">
+                <label for="timeoutElement">Elemento visible / interactuable</label>
+                <input type="number" id="timeoutElement" value="10000" min="500" step="500">
+              </div>
+              <div class="form-group">
+                <label for="timeoutApi">Respuesta de API</label>
+                <input type="number" id="timeoutApi" value="15000" min="1000" step="1000">
+              </div>
+            </div>
+          </div>
+          <!-- Reintentos por tipo de falla -->
+          <div style="margin-top:16px;">
+            <label style="font-size:13px;color:var(--text-secondary);font-weight:500;display:block;margin-bottom:10px;">🔄 Reintentos por Tipo de Falla</label>
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" id="retryNetwork" checked><span>🌐 Error de red / conexión</span></label>
+              <label class="checkbox-item"><input type="checkbox" id="retryElement" checked><span>🔍 Elemento no encontrado</span></label>
+              <label class="checkbox-item"><input type="checkbox" id="retryTimeout"><span>⏱️ Timeout de acción</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /accordion (real close) -->
+
     <!-- Generate Button -->
     <div class="generate-wrapper">
       <button class="btn-generate" id="generateBtn" onclick="generatePrompt()">
@@ -391,6 +533,7 @@ select option{background:var(--bg-secondary);}
         <div class="output-header-title">📄 Prompt Generado</div>
         <div class="output-actions">
           <button class="btn" id="copyBtn" onclick="copyPrompt()">📋 Copiar Prompt</button>
+          <button class="btn" onclick="downloadPrompt()">⬇️ Descargar .md</button>
           <button class="btn" onclick="regenerate()">🔄 Regenerar</button>
         </div>
       </div>
@@ -453,6 +596,8 @@ function onUiToolChange(){
 function onMultiEnvChange(){
   const checked=document.getElementById('multiEnv').checked;
   document.getElementById('envGroup').classList.toggle('hidden',!checked);
+  const envUrlsGroup=document.getElementById('envUrlsGroup');
+  if(envUrlsGroup) envUrlsGroup.classList.toggle('hidden',!checked);
 }
 function updateCharCount(el){
   document.getElementById('req-chars').textContent=el.value.length;
@@ -503,6 +648,24 @@ function getConfig(){
     retryMechanism:document.getElementById('retryMechanism').checked,
     headlessMode:document.getElementById('headlessMode').checked,
     testDataMgmt:document.getElementById('testDataMgmt').checked,
+    // Section 7 — new fields
+    baseUrl:document.getElementById('baseUrl').value.trim(),
+    authType:document.getElementById('authType').value,
+    credentialStrategy:document.getElementById('credentialStrategy').value,
+    testDataSource:document.getElementById('testDataSource').value,
+    functionalModules:document.getElementById('functionalModules').value.trim(),
+    envUrls:document.getElementById('envUrls').value.trim(),
+    screenshotPolicy:document.getElementById('screenshotPolicy').value,
+    defectsIntegration:document.getElementById('defectsIntegration').value,
+    namingConvention:document.getElementById('namingConvention').value,
+    minBrowserVersion:document.getElementById('minBrowserVersion').value.trim(),
+    coverageThreshold:parseInt(document.getElementById('coverageThreshold').value)||80,
+    timeoutPage:parseInt(document.getElementById('timeoutPage').value)||30000,
+    timeoutElement:parseInt(document.getElementById('timeoutElement').value)||10000,
+    timeoutApi:parseInt(document.getElementById('timeoutApi').value)||15000,
+    retryNetwork:document.getElementById('retryNetwork').checked,
+    retryElement:document.getElementById('retryElement').checked,
+    retryTimeout:document.getElementById('retryTimeout').checked,
   };
 }
 function getBDDVersion(){
@@ -557,12 +720,8 @@ function getUIToolDisplay(cfg){
 // MAIN GENERATE
 // ══════════════════════════════════════════════════════════════
 function generatePrompt(){
+  if(!validateForm()) return;
   const config=getConfig();
-  if(!config.projectName){
-    showAlert('⚠️ El nombre del proyecto es obligatorio','danger');
-    document.getElementById('projectName').focus();
-    return;
-  }
   const btn=document.getElementById('generateBtn');
   btn.classList.add('loading');
   btn.disabled=true;
@@ -571,6 +730,7 @@ function generatePrompt(){
       const prompt=buildPrompt(config);
       window._lastPrompt=prompt;
       window._lastConfig=config;
+      saveConfig(config);
       renderOutput(prompt,config);
       document.getElementById('output-section').classList.remove('hidden');
       document.getElementById('output-section').scrollIntoView({behavior:'smooth',block:'start'});
@@ -627,8 +787,10 @@ Tu tarea es generar un **proyecto completo de automatización QA funcional** lis
 | **Nombre del Proyecto** | \`${c.projectName}\` |
 | **Tipo de Aplicación** | ${appDisplay} |
 | **Idioma de salida** | ${c.outputLang==='es'?'Español':'English'} |${c.projectDescription?`
-| **Descripción** | ${c.projectDescription} |`:''}`);
-
+| **Descripción** | ${c.projectDescription} |`:''}${c.baseUrl?`
+| **URL Base (aplicación bajo prueba)** | \`${c.baseUrl}\` |`:''}${c.authType&&c.authType!=='none'?`
+| **Tipo de autenticación** | ${getAuthTypeDisplay(c.authType)} |`:''}${c.functionalModules?`
+| **Módulos del sistema** | ${c.functionalModules} |`:''}`);
   // STACK
   parts.push(`## ⚙️ Stack Tecnológico Seleccionado
 
@@ -642,7 +804,8 @@ Tu tarea es generar un **proyecto completo de automatización QA funcional** lis
 | **UI / API Tool** | ${uiDisplay} | ${c.uiToolVersion} |
 | **Build Tool** | ${buildDisplay} | — |
 | **Reporting** | ${reportDisplay} | — |
-| **CI/CD** | ${cicdDisplay} | — |`);
+| **CI/CD** | ${cicdDisplay} | — |${c.minBrowserVersion?`
+| **Navegador mínimo objetivo** | ${c.minBrowserVersion} | — |`:''}`);
 
   // DEPENDENCIES
   if(isJava){
@@ -671,6 +834,18 @@ ${scenarioLabels.map(s=>`- ${s}`).join('\n')}
     stratSection+=`\n\n### Background en Features
 - **Incluir** sección \`Background:\` en cada archivo .feature con los pasos de precondición.
 - El Background debe reflejar el estado mínimo necesario para ejecutar los escenarios del feature.`;
+  }
+
+  // Auth type details
+  if(c.authType&&c.authType!=='none'){
+    stratSection+=`\n\n### Estrategia de Autenticación: ${getAuthTypeDisplay(c.authType)}
+${getAuthTypeInstructions(c.authType)}`;
+  }
+
+  // Functional modules
+  if(c.functionalModules){
+    const mods=c.functionalModules.split(',').map(m=>m.trim()).filter(Boolean);
+    stratSection+=`\n\n### Módulos Funcionales a Cubrir\nGenera un archivo \`.feature\` independiente para **cada uno** de los siguientes módulos:\n${mods.map(m=>`- \`${m}\``).join('\n')}`;
   }
 
   // Special modules
@@ -964,17 +1139,24 @@ cucumber.filter.tags=${c.scenarioTypes.includes('smoke')?'@smoke':''}
 #### \`src/test/resources/application.properties\`
 \`\`\`properties
 # Base URL — usar variables de entorno, NO hardcodear en producción
-app.base.url=\${APP_BASE_URL:https://qa.example.com}
-app.api.url=\${APP_API_URL:https://api-qa.example.com}
+app.base.url=\${APP_BASE_URL:${c.baseUrl||'https://qa.example.com'}}
+app.api.url=\${APP_API_URL:${c.baseUrl?c.baseUrl.replace(/\/$/, '')+'/api':'https://api-qa.example.com'}}
 # Browser
 browser=${isPW?'chromium':'chrome'}
-headless=\${HEADLESS:true}
+headless=\${HEADLESS:true}${c.minBrowserVersion?`\nbrowser.version=${c.minBrowserVersion}`:''}
 # Timeouts (ms)
-default.timeout=30000
-element.timeout=10000
+page.load.timeout=${c.timeoutPage||30000}
+element.timeout=${c.timeoutElement||10000}
+api.response.timeout=${c.timeoutApi||15000}
 # Retry
 retry.count=${c.retryMechanism?'2':'0'}
-\`\`\``:
+retry.on.network=${c.retryNetwork?'true':'false'}
+retry.on.element.not.found=${c.retryElement?'true':'false'}
+retry.on.timeout=${c.retryTimeout?'true':'false'}
+# Screenshots
+screenshot.policy=${c.screenshotPolicy||'on-failure'}
+# Credential strategy: ${getCredentialStrategyDisplay(c.credentialStrategy)}
+\`\`\`${c.multiEnv&&c.envUrls?`\n\n#### Archivos por ambiente (application-{env}.properties)\n${buildEnvPropertiesBlock(c)}`:''}`:
 `#### \`pytest.ini\`
 \`\`\`ini
 [pytest]
@@ -989,10 +1171,14 @@ addopts = -v --tb=short${c.reporting!=='none'?' --alluredir=allure-results':''}$
 
 #### \`.env.example\`
 \`\`\`bash
-APP_BASE_URL=https://qa.example.com
-APP_API_URL=https://api-qa.example.com
+APP_BASE_URL=${c.baseUrl||'https://qa.example.com'}
+APP_API_URL=${c.baseUrl?c.baseUrl.replace(/\/$/, '')+'/api':'https://api-qa.example.com'}
 HEADLESS=true
 ENV=qa
+PAGE_LOAD_TIMEOUT=${c.timeoutPage||30000}
+ELEMENT_TIMEOUT=${c.timeoutElement||10000}
+API_TIMEOUT=${c.timeoutApi||15000}
+SCREENSHOT_POLICY=${c.screenshotPolicy||'on-failure'}
 \`\`\``}
 
 ### 3. Feature Files (.feature) — Gherkin
@@ -1035,13 +1221,14 @@ ${c.dataDriven?`
 
 - Step definitions **limpios**, sin lógica de UI directamente (delegar a Page Objects).
 - Usar **inyección de dependencias** con PicoContainer (Java) o fixtures (Python).
-- Nombrar métodos descriptivamente: \`userEntersValidCredentials()\`, \`userSeesMainDashboard()\`.
+- Nombrar métodos descriptivamente según la convención **${c.namingConvention||'camelCase'}**: \`userEntersValidCredentials()\`, \`userSeesMainDashboard()\`.
 
 ### 5. Patrón de Diseño: Page Object Model
 
 - **BasePage**: Métodos reutilizables de interacción (click, fill, waitForElement, etc.).
 - **Páginas específicas**: Heredan de BasePage. Encapsulan selectores y acciones del módulo.
 - **Selectores**: Preferir \`data-testid\`, \`aria-label\`, o \`role\` sobre XPath frágiles.${isPW?'\n- Usar **auto-waiting nativo de Playwright** en vez de sleeps explícitos.':''}
+- **Convención de nomenclatura del equipo**: usar **${c.namingConvention||'camelCase'}** para métodos y variables; **PascalCase** para clases.
 
 ### 6. Hooks
 
@@ -1051,10 +1238,11 @@ ${isJava?`// Hooks.java
 public void setUp(Scenario scenario) {
     // inicializar browser, contexto, drivers
     // leer configuración de entorno
+    // estrategia de credenciales: ${getCredentialStrategyDisplay(c.credentialStrategy)}
 }
 @After
 public void tearDown(Scenario scenario) {
-    // capturar screenshot si falla
+    // política de screenshots: ${c.screenshotPolicy==='always'?'siempre capturar screenshot':c.screenshotPolicy==='never'?'nunca capturar screenshot':'capturar screenshot solo si falla'}
     // cerrar browser/contexto
     // limpiar datos de prueba
 }
@@ -1078,17 +1266,20 @@ def capture_screenshot_on_failure(request, page):
 
 ### 7. Test Data Management
 
+- **Fuente de datos**: ${getTestDataSourceDisplay(c.testDataSource)}.
 - Archivos JSON/YAML en \`${basePath}/resources/test-data/\` (Java) o \`test_data/\` (Python).
 - **Nunca hardcodear** credenciales o datos sensibles en el código.
-- Usar variables de entorno para datos secretos: \`System.getenv("DB_PASSWORD")\` o \`os.getenv("DB_PASSWORD")\`.
+- **Estrategia de credenciales**: ${getCredentialStrategyDisplay(c.credentialStrategy)} — usar \`System.getenv("SECRET")\` o \`os.getenv("SECRET")\`.
 - Implementar clase \`TestDataLoader\` para cargar datos dinámicamente.
+${c.testDataSource==='faker'?'- Usar librería **Faker** para generar datos realistas y únicos en cada ejecución.':c.testDataSource==='mock'?'- Configurar **WireMock** (Java) o **MSW** (Python/JS) para simular respuestas de API externas.':c.testDataSource==='db'?'- Configurar base de datos de prueba aislada. Implementar setup/teardown de datos en los hooks @Before/@After.':c.testDataSource==='api-seed'?'- Implementar endpoints de seed/cleanup de datos via API antes y después de cada escenario.':''}
 
 ### 8. Reporting: ${reportDisplay}
 
 ${c.reporting!=='none'?`- Configurar reporte ${reportDisplay} con historial de ejecución.
-- Adjuntar screenshots automáticamente a cada escenario fallido.
+- Adjuntar screenshots automáticamente en cada escenario ${c.screenshotPolicy==='always'?'(siempre)':c.screenshotPolicy==='never'?'(desactivado)':'fallido'}.
 - Adjuntar logs y response bodies de APIs en caso de falla.
-- Configurar reporte de cobertura por módulo/tag.`:
+- Configurar reporte de cobertura por módulo/tag.
+- **Umbral mínimo de cobertura**: ${c.coverageThreshold}% — si no se alcanza, el pipeline debe fallar.${c.defectsIntegration!=='none'?`\n- **Integración de defectos**: ${getDefectsIntegrationDisplay(c.defectsIntegration)} — incluir anotaciones con IDs de tickets en los escenarios y configurar el plugin de integración correspondiente.`:''}`:
 '- Implementar al menos logs básicos con timestamps para debugging.'}
 
 ### 9. CI/CD: ${cicdDisplay}
@@ -1122,6 +1313,8 @@ jobs:
         env:
           APP_BASE_URL: \${{ secrets.APP_BASE_URL }}
           HEADLESS: "true"
+      - name: Check coverage threshold
+        run: echo "Cobertura mínima requerida: ${c.coverageThreshold}%"
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -1222,19 +1415,27 @@ screenshots/
 }
 
 function buildBestPracticesSection(c,isJava,isPW){
+  const retryTypes=[];
+  if(c.retryNetwork) retryTypes.push('error de red');
+  if(c.retryElement) retryTypes.push('elemento no encontrado');
+  if(c.retryTimeout) retryTypes.push('timeout');
+
   let items=[
     '✅ **Código limpio y SOLID**: Single Responsibility en Page Objects y Steps. Métodos pequeños, descriptivos y reutilizables.',
     `✅ **Waits inteligentes**: ${isPW?'Usar **auto-waiting nativo de Playwright**. Prohibido `page.waitForTimeout()` para lógica de negocio. Usar `page.waitForSelector()`, `expect(locator).toBeVisible()`.':'Usar **Explicit Waits** de WebDriver (`WebDriverWait + ExpectedConditions`). Prohibido `Thread.sleep()` en producción.'}`,
     '✅ **Código sin hardcoding**: Variables de entorno para URLs, credenciales y configuración sensible.',
     '✅ **Selectores robustos**: Preferir `data-testid`, `aria-label`, `role` y texto visible. XPath solo como último recurso.',
     c.parallelExecution?'✅ **Ejecución paralela**: Configurar thread-safety en Page Objects y contextos de browser independientes por thread.':'⚠️ **Ejecución paralela**: No configurada. Considerar habilitar para reducir tiempo de ejecución.',
-    c.retryMechanism?'✅ **Retry mechanism**: Implementar retry automático (máx. 2 reintentos) para escenarios flaky. Loguear cada reintento.':'',
+    c.retryMechanism?`✅ **Retry mechanism**: Implementar retry automático (máx. 2 reintentos) para escenarios flaky${retryTypes.length?` (activado para: ${retryTypes.join(', ')})`:''} . Loguear cada reintento.`:'',
     c.headlessMode?'✅ **Headless + Headed**: Configurar via variable de entorno `HEADLESS=true/false`. CI/CD usa headless por defecto.':'',
     c.multiEnv?`✅ **Multi-ambiente**: Soporte para ambientes [${c.environments}] mediante archivos de configuración por ambiente y variable de entorno \`ENV\`.`:'',
     '✅ **Logging centralizado**: Logger configurado con nivel INFO en producción, DEBUG en desarrollo. Incluir timestamps y nombre de clase.',
-    c.testDataMgmt?'✅ **Test data management**: Datos de prueba en archivos JSON/YAML. Usar `Faker` para datos dinámicos. Limpiar datos post-test.':'',
-    '✅ **Screenshots automáticos**: Captura de screenshot en cada escenario fallido, adjunto al reporte.',
+    c.testDataMgmt?`✅ **Test data management**: ${getTestDataSourceDisplay(c.testDataSource)}. Usar \`Faker\` para datos dinámicos. Limpiar datos post-test.`:'',
+    `✅ **Política de screenshots**: ${c.screenshotPolicy==='always'?'Captura de screenshot en CADA escenario (siempre).':c.screenshotPolicy==='never'?'Screenshots desactivados (configuración explícita).':'Captura de screenshot en cada escenario FALLIDO, adjunto al reporte.'}`,
     '✅ **Tags estratégicos**: `@smoke`, `@regression`, `@negative`, `@boundary`, `@happy-path`, `@[módulo]` en todos los escenarios.',
+    c.coverageThreshold?`✅ **Umbral de cobertura**: Configurar pipeline para fallar si la cobertura de escenarios ejecutados es inferior al **${c.coverageThreshold}%**.`:'',
+    c.namingConvention?`✅ **Convención de nomenclatura**: Usar **${c.namingConvention}** en todo el proyecto (métodos, variables, archivos). Consistencia en todo el equipo.`:'',
+    c.defectsIntegration!=='none'?`✅ **Trazabilidad**: Anotar escenarios con IDs de ${getDefectsIntegrationDisplay(c.defectsIntegration)} para trazabilidad entre defectos y pruebas.`:'',
     '✅ **Escalabilidad**: Arquitectura que permita agregar nuevos módulos sin modificar clases existentes.',
   ].filter(Boolean);
 
@@ -1311,6 +1512,196 @@ function copyPrompt(){
     showAlert('✅ Prompt copiado al portapapeles','success');
   });
 }
+
+// ══════════════════════════════════════════════════════════════
+// DISPLAY HELPERS — NEW FIELDS
+// ══════════════════════════════════════════════════════════════
+function getAuthTypeDisplay(v){
+  const m={none:'Sin autenticación especial',basic:'Basic Auth',jwt:'JWT / Bearer Token',oauth2:'OAuth 2.0',sso:'SSO / SAML',apikey:'API Key'};
+  return m[v]||v;
+}
+function getAuthTypeInstructions(v){
+  const m={
+    basic:'- Crear un `AuthHelper` que lea usuario/contraseña de variables de entorno.\n- Incluir paso de autenticación en el `Background` de los features que lo requieran.',
+    jwt:'- Implementar un `TokenManager` que obtenga y renueve el Bearer Token antes de cada suite.\n- Inyectar el token en los headers HTTP de cada request/sesión.\n- Almacenar el token en `ScenarioContext` para reutilización entre steps.',
+    oauth2:'- Implementar flujo OAuth 2.0 (Authorization Code / PKCE) en un hook `@Before`.\n- Usar endpoint de token y almacenar `access_token` en `ScenarioContext`.\n- Configurar refresh token automático si la sesión expira durante la ejecución.',
+    sso:'- Implementar login SSO/SAML a través de la UI (navegar al IDP y completar el flujo).\n- Cachear la sesión autenticada para evitar login repetido en cada escenario.\n- Configurar cookies de sesión en el contexto de Playwright/Selenium.',
+    apikey:'- Leer API Key de variable de entorno `API_KEY`.\n- Inyectar en header `X-API-Key` o query param según especificación de la API.\n- No exponer la key en logs ni en reportes.',
+  };
+  return m[v]||'- Implementar la estrategia de autenticación según la documentación del sistema.';
+}
+function getCredentialStrategyDisplay(v){
+  const m={'env-vars':'Variables de entorno','vault':'HashiCorp Vault / Azure Key Vault','encrypted-file':'Archivo cifrado','test-properties':'Archivo de propiedades de prueba'};
+  return m[v]||v||'Variables de entorno';
+}
+function getTestDataSourceDisplay(v){
+  const m={'faker':'Faker / Datos dinámicos','json-yaml':'Archivos JSON/YAML estáticos','mock':'Mock server (WireMock/MSW)','db':'Base de datos de prueba','api-seed':'API seed / Setup endpoints'};
+  return m[v]||v||'Archivos JSON/YAML estáticos';
+}
+function getDefectsIntegrationDisplay(v){
+  const m={'none':'Sin integración','jira':'Jira','azure-devops':'Azure DevOps','github-issues':'GitHub Issues'};
+  return m[v]||v;
+}
+function buildEnvPropertiesBlock(c){
+  if(!c.envUrls) return '';
+  const lines=c.envUrls.split('\n').filter(l=>l.trim());
+  let result='';
+  lines.forEach(line=>{
+    const[env,url]=line.split('=').map(s=>s.trim());
+    if(env&&url){
+      result+=`\n\`\`\`properties\n# application-${env}.properties\napp.base.url=${url}\nENV=${env}\n\`\`\``;
+    }
+  });
+  return result;
+}
+
+// ══════════════════════════════════════════════════════════════
+// FORM VALIDATION
+// ══════════════════════════════════════════════════════════════
+function validateForm(){
+  let valid=true;
+  // Clear all previous errors
+  document.querySelectorAll('.form-group.has-error').forEach(g=>g.classList.remove('has-error'));
+  // Required: projectName
+  const nameEl=document.getElementById('projectName');
+  if(!nameEl.value.trim()){
+    nameEl.closest('.form-group').classList.add('has-error');
+    nameEl.focus();
+    showAlert('⚠️ El nombre del proyecto es obligatorio','danger');
+    valid=false;
+  }
+  // Validate numbers
+  const numFields=[
+    {id:'maxScenarios',min:1,max:20,label:'Máx. escenarios'},
+    {id:'coverageThreshold',min:0,max:100,label:'Cobertura mínima'},
+    {id:'timeoutPage',min:1000,label:'Timeout carga de página'},
+    {id:'timeoutElement',min:500,label:'Timeout elemento'},
+    {id:'timeoutApi',min:1000,label:'Timeout API'},
+  ];
+  numFields.forEach(f=>{
+    const el=document.getElementById(f.id);
+    if(!el) return;
+    const val=parseInt(el.value);
+    if(isNaN(val)||(f.min!==undefined&&val<f.min)||(f.max!==undefined&&val>f.max)){
+      el.closest('.form-group').classList.add('has-error');
+      if(valid){
+        el.focus();
+        showAlert(`⚠️ Valor inválido en: ${f.label}`,'danger');
+      }
+      valid=false;
+    }
+  });
+  return valid;
+}
+
+// ══════════════════════════════════════════════════════════════
+// LOCALSTORAGE PERSISTENCE
+// ══════════════════════════════════════════════════════════════
+const LS_KEY='qaPromptConfig_v2';
+function saveConfig(cfg){
+  try{localStorage.setItem(LS_KEY,JSON.stringify(cfg));}catch(e){console.warn('Failed to save config to localStorage:',e);}
+}
+function loadSavedConfig(){
+  try{return JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(e){localStorage.removeItem(LS_KEY);console.warn('Cleared corrupted config from localStorage:',e);return null;}
+}
+function clearSavedConfig(){
+  localStorage.removeItem(LS_KEY);
+  document.getElementById('config-banner').classList.add('hidden');
+  showAlert('🗑️ Configuración guardada eliminada.','success');
+}
+function restoreConfig(){
+  const cfg=loadSavedConfig();
+  if(!cfg) return;
+  const setVal=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined&&v!==null){el.value=v;}};
+  const setChk=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined){el.checked=!!v;}};
+  setVal('projectName',cfg.projectName);
+  setVal('projectDescription',cfg.projectDescription);
+  setVal('outputLang',cfg.outputLang);
+  setVal('language',cfg.language);
+  onLanguageChange();
+  setVal('bddFramework',cfg.bddFramework);
+  setVal('runner',cfg.runner);
+  setVal('uiTool',cfg.uiTool);
+  onUiToolChange();
+  setVal('buildTool',cfg.buildTool);
+  setVal('appType',cfg.appType);
+  setVal('functionalDeps',cfg.functionalDeps);
+  setChk('featureBackground',cfg.featureBackground);
+  // scenario types
+  document.querySelectorAll('#scenarioTypes input[type=checkbox]').forEach(cb=>{
+    cb.checked=Array.isArray(cfg.scenarioTypes)&&cfg.scenarioTypes.includes(cb.value);
+  });
+  setVal('maxScenarios',cfg.maxScenarios);
+  setChk('dataDriven',cfg.dataDriven);
+  setChk('securityTesting',cfg.securityTesting);
+  setChk('contractTesting',cfg.contractTesting);
+  setChk('schemaValidation',cfg.schemaValidation);
+  setChk('accessibility',cfg.accessibility);
+  setVal('requirements',cfg.requirements);
+  if(cfg.requirements) updateCharCount(document.getElementById('requirements'));
+  setVal('reporting',cfg.reporting);
+  setVal('cicd',cfg.cicd);
+  setChk('multiEnv',cfg.multiEnv);
+  setVal('environments',cfg.environments);
+  onMultiEnvChange();
+  setChk('parallelExecution',cfg.parallelExecution);
+  setChk('retryMechanism',cfg.retryMechanism);
+  setChk('headlessMode',cfg.headlessMode);
+  setChk('testDataMgmt',cfg.testDataMgmt);
+  // section 7
+  setVal('baseUrl',cfg.baseUrl);
+  setVal('authType',cfg.authType);
+  setVal('credentialStrategy',cfg.credentialStrategy);
+  setVal('testDataSource',cfg.testDataSource);
+  setVal('functionalModules',cfg.functionalModules);
+  setVal('envUrls',cfg.envUrls);
+  setVal('screenshotPolicy',cfg.screenshotPolicy);
+  setVal('defectsIntegration',cfg.defectsIntegration);
+  setVal('namingConvention',cfg.namingConvention);
+  setVal('minBrowserVersion',cfg.minBrowserVersion);
+  setVal('coverageThreshold',cfg.coverageThreshold);
+  setVal('timeoutPage',cfg.timeoutPage);
+  setVal('timeoutElement',cfg.timeoutElement);
+  setVal('timeoutApi',cfg.timeoutApi);
+  setChk('retryNetwork',cfg.retryNetwork);
+  setChk('retryElement',cfg.retryElement);
+  setChk('retryTimeout',cfg.retryTimeout);
+  document.getElementById('config-banner').classList.add('hidden');
+  showAlert('↩️ Configuración restaurada correctamente.','success');
+}
+function initApp(){
+  const saved=loadSavedConfig();
+  if(saved&&saved.projectName){
+    document.getElementById('config-banner').classList.remove('hidden');
+  }
+  // init visibility
+  onMultiEnvChange();
+}
+
+// ══════════════════════════════════════════════════════════════
+// DOWNLOAD PROMPT
+// ══════════════════════════════════════════════════════════════
+function downloadPrompt(){
+  if(!window._lastPrompt) return;
+  const fileName=(window._lastConfig&&window._lastConfig.projectName
+    ?window._lastConfig.projectName.replace(/[^a-zA-Z0-9_-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')
+    :'qa-prompt')+'-prompt.md';
+  const blob=new Blob([window._lastPrompt],{type:'text/markdown;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showAlert('⬇️ Prompt descargado como '+fileName,'success');
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', initApp);
 
 // ══════════════════════════════════════════════════════════════
 // MARKDOWN TO HTML (lightweight renderer)
