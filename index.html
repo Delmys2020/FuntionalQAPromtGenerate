@@ -477,9 +477,9 @@ function getConfig(){
     projectDescription:document.getElementById('projectDescription').value.trim(),
     outputLang:document.getElementById('outputLang').value,
     language:document.getElementById('language').value,
-    bddFramework:document.getElementById('bddFramework').value.split(' ')[0],
+    bddFramework:document.getElementById('bddFramework').value,
     bddVersion:getBDDVersion(),
-    runner:document.getElementById('runner').value.split(' ')[0],
+    runner:document.getElementById('runner').value,
     runnerVersion:getRunnerVersion(),
     uiTool:document.getElementById('uiTool').value,
     uiToolVersion:getUIToolVersion(),
@@ -508,7 +508,7 @@ function getConfig(){
 function getBDDVersion(){
   const v=document.getElementById('bddFramework').value;
   const lang=document.getElementById('language').value;
-  if(lang==='python') return v.includes('pytest')?'7.x':'1.2.6';
+  if(lang==='python') return v.includes('pytest')?'7.2.0':'1.2.6';
   return v.includes('serenity')?'4.2.x':'7.21.0';
 }
 function getRunnerVersion(){
@@ -871,11 +871,9 @@ function buildOutputSection(c,isJava,isPW,isGradle,isMaven,appDisplay,buildDispl
 \`\`\`
 ${c.projectName}/
 ├── ${isGradle?'build.gradle.kts':'pom.xml'}
-├── ${isGradle?'settings.gradle.kts':''}
-├── .gitignore
+${isGradle?'├── settings.gradle.kts\n':''}├── .gitignore
 ├── README.md
-├── ${isGradle?'gradle/wrapper/gradle-wrapper.properties':''}
-├── src/
+${isGradle?'├── gradle/wrapper/gradle-wrapper.properties\n':''}├── src/
 │   └── test/
 │       ├── java/com/${pkg}/
 │       │   ├── runner/
@@ -1320,15 +1318,16 @@ function copyPrompt(){
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function markdownToHtml(md){
-  let html=escHtml(md);
-  // Code blocks (fenced) — preserve whitespace
+  // Extract code blocks FIRST (before HTML escaping) to avoid double-encoding
   const blocks=[];
-  html=html.replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>{
+  let processed=md.replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>{
     const idx=blocks.length;
-    blocks.push(`<pre><code class="lang-${lang||'text'}">${code}</code></pre>`);
+    blocks.push(`<pre><code class="lang-${escHtml(lang||'text')}">${escHtml(code)}</code></pre>`);
     return `\x00BLOCK${idx}\x00`;
   });
-  // Inline code
+  // Now HTML-escape the remaining markdown text (not code blocks)
+  let html=escHtml(processed);
+  // Inline code — content already escaped by escHtml above
   html=html.replace(/`([^`]+)`/g,'<code>$1</code>');
   // Headings
   html=html.replace(/^#### (.+)$/gm,'<h4>$1</h4>');
