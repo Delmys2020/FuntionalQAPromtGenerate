@@ -3,27 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QA Project Generator</title>
+  <title>Generador de Prompt QA Automation</title>
   <style>
-
-:root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-tertiary:#21262d;--border:#30363d;--text-primary:#c9d1d9;--text-secondary:#8b949e;--accent:#58a6ff;--accent-hover:#79c0ff;--success:#3fb950;--warning:#d29922;--danger:#f85149;--purple:#bc8cff;--orange:#ffa657;--radius:8px;--shadow:0 4px 20px rgba(0,0,0,0.4);}
+:root{
+  --bg-primary:#0d1117;--bg-secondary:#161b22;--bg-tertiary:#21262d;
+  --border:#30363d;--text-primary:#c9d1d9;--text-secondary:#8b949e;
+  --accent:#58a6ff;--accent-hover:#79c0ff;--success:#3fb950;
+  --warning:#d29922;--danger:#f85149;--purple:#bc8cff;--orange:#ffa657;
+  --radius:8px;--shadow:0 4px 20px rgba(0,0,0,0.4);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+body{background:var(--bg-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
 a{color:var(--accent);}
 .container{max-width:1100px;margin:0 auto;padding:0 16px;}
 header{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:16px 0;position:sticky;top:0;z-index:100;}
 .header-inner{display:flex;align-items:center;gap:12px;}
 .header-logo{font-size:28px;}
-.header-title{font-size:22px;font-weight:700;}
+.header-info{flex:1;}
+.header-title{font-size:20px;font-weight:700;}
 .header-subtitle{font-size:12px;color:var(--text-secondary);margin-top:2px;}
-main{padding:32px 0 64px;}
+.header-badge{background:rgba(88,166,255,.15);color:var(--accent);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid rgba(88,166,255,.3);}
+main{padding:32px 0 80px;}
 /* Accordion */
 .accordion{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
 .acc-item{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .acc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s;}
 .acc-header:hover{background:var(--bg-tertiary);}
 .acc-header-left{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;}
+.acc-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(88,166,255,.15);color:var(--accent);font-size:11px;font-weight:700;flex-shrink:0;}
 .acc-chevron{transition:transform .25s;color:var(--text-secondary);font-size:16px;}
 .acc-item.open .acc-chevron{transform:rotate(180deg);}
 .acc-body{display:none;padding:18px;border-top:1px solid var(--border);}
@@ -36,19 +44,19 @@ label{font-size:13px;color:var(--text-secondary);font-weight:500;}
 label .req{color:var(--danger);margin-left:2px;}
 input[type=text],input[type=number],textarea,select{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:13px;padding:8px 12px;width:100%;transition:border-color .15s,box-shadow .15s;font-family:inherit;}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,.12);}
-textarea{resize:vertical;min-height:80px;}
+textarea{resize:vertical;min-height:90px;}
 select option{background:var(--bg-secondary);}
 .checkbox-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;}
-.checkbox-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;transition:border-color .15s,background .15s;}
+.checkbox-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:7px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;transition:border-color .15s,background .15s;}
 .checkbox-item:hover{border-color:var(--accent);background:rgba(88,166,255,.05);}
-.checkbox-item input{accent-color:var(--accent);width:15px;height:15px;cursor:pointer;}
+.checkbox-item input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
 .checkbox-item input:checked+span{color:var(--accent);}
 .checkbox-item span{font-size:13px;color:var(--text-secondary);user-select:none;}
-.hint{font-size:11px;color:var(--text-secondary);margin-top:2px;}
+.hint{font-size:11px;color:var(--text-secondary);margin-top:3px;}
 .hidden{display:none!important;}
 /* Generate Button */
 .generate-wrapper{display:flex;justify-content:center;margin:28px 0;}
-.btn-generate{background:linear-gradient(135deg,#1f6feb,var(--accent));color:#fff;border:none;border-radius:var(--radius);padding:14px 48px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;box-shadow:0 2px 16px rgba(88,166,255,.35);display:flex;align-items:center;gap:10px;}
+.btn-generate{background:linear-gradient(135deg,#1f6feb,var(--accent));color:#fff;border:none;border-radius:var(--radius);padding:14px 52px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;box-shadow:0 2px 16px rgba(88,166,255,.35);display:flex;align-items:center;gap:10px;}
 .btn-generate:hover{transform:translateY(-2px);box-shadow:0 4px 24px rgba(88,166,255,.5);}
 .btn-generate:active{transform:translateY(0);}
 .btn-generate:disabled{opacity:.6;cursor:not-allowed;transform:none;}
@@ -56,6 +64,7 @@ select option{background:var(--bg-secondary);}
 .btn-generate.loading .spinner{display:block;}
 .btn-generate.loading .btn-label{display:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
+/* Alert */
 .alert{padding:12px 16px;border-radius:var(--radius);margin-bottom:16px;font-size:13px;display:flex;align-items:center;gap:8px;}
 .alert-danger{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);color:#f85149;}
 .alert-success{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);color:#3fb950;}
@@ -64,8 +73,9 @@ select option{background:var(--bg-secondary);}
 .output-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .output-header-title{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;}
 .output-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.btn{padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:13px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:center;gap:6px;font-family:inherit;}
+.btn{padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:13px;cursor:pointer;transition:border-color .15s,background .15s,color .15s;display:flex;align-items:center;gap:6px;font-family:inherit;}
 .btn:hover{border-color:var(--accent);background:rgba(88,166,255,.08);color:var(--accent);}
+.btn.copied{border-color:var(--success);color:var(--success);}
 .btn-primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600;}
 .btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#000;}
 /* Tabs */
@@ -75,51 +85,53 @@ select option{background:var(--bg-secondary);}
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
 .tab-content{display:none;padding:20px;}
 .tab-content.active{display:block;}
-/* Architecture */
-.arch-table{width:100%;border-collapse:collapse;margin-bottom:24px;}
-.arch-table th,.arch-table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
-.arch-table th{background:var(--bg-tertiary);color:var(--text-secondary);font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
-.arch-table tr:last-child td{border-bottom:none;}
-.arch-table td:first-child{color:var(--text-secondary);font-size:12px;width:30%;}
-.arch-table td:last-child{color:var(--text-primary);font-weight:500;}
+/* Markdown Preview */
+.md-preview{font-size:14px;line-height:1.8;color:var(--text-primary);}
+.md-preview h1{font-size:22px;font-weight:700;border-bottom:2px solid var(--border);padding-bottom:10px;margin:0 0 18px;color:var(--accent);}
+.md-preview h2{font-size:17px;font-weight:700;margin:24px 0 12px;color:var(--accent-hover);display:flex;align-items:center;gap:6px;}
+.md-preview h3{font-size:15px;font-weight:600;margin:18px 0 8px;color:var(--orange);}
+.md-preview h4{font-size:13px;font-weight:600;margin:14px 0 6px;color:var(--purple);}
+.md-preview p{margin:8px 0;}
+.md-preview ul,.md-preview ol{margin:8px 0 8px 22px;}
+.md-preview li{margin:4px 0;}
+.md-preview strong{color:var(--text-primary);font-weight:600;}
+.md-preview em{color:var(--text-secondary);}
+.md-preview code{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:'Courier New',monospace;font-size:12px;color:var(--orange);}
+.md-preview pre{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:14px;overflow-x:auto;margin:12px 0;}
+.md-preview pre code{background:none;border:none;padding:0;font-size:12px;line-height:1.65;color:var(--text-primary);}
+.md-preview table{width:100%;border-collapse:collapse;margin:12px 0;}
+.md-preview th{background:var(--bg-tertiary);color:var(--text-secondary);font-size:12px;text-transform:uppercase;letter-spacing:.4px;padding:8px 12px;text-align:left;border-bottom:2px solid var(--border);}
+.md-preview td{padding:8px 12px;border-bottom:1px solid var(--border);}
+.md-preview tr:last-child td{border-bottom:none;}
+.md-preview blockquote{border-left:3px solid var(--accent);padding:8px 14px;background:rgba(88,166,255,.06);border-radius:0 4px 4px 0;margin:10px 0;color:var(--text-secondary);}
+.md-preview hr{border:none;border-top:1px solid var(--border);margin:20px 0;}
+/* Raw Markdown */
+.raw-prompt{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;color:var(--text-primary);white-space:pre-wrap;word-break:break-word;max-height:600px;overflow-y:auto;}
+/* Summary section */
+.summary-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px;}
+.summary-card{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:12px 16px;}
+.summary-card-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.summary-card-value{font-size:13px;font-weight:600;color:var(--accent);}
+/* Badge */
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;}
 .badge-blue{background:rgba(88,166,255,.15);color:var(--accent);}
 .badge-green{background:rgba(63,185,80,.15);color:var(--success);}
 .badge-orange{background:rgba(255,166,87,.15);color:var(--orange);}
 .badge-purple{background:rgba(188,140,255,.15);color:var(--purple);}
-.arch-diagram{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'Courier New',monospace;font-size:13px;color:var(--text-secondary);line-height:1.8;overflow-x:auto;white-space:pre;}
-/* File Tree */
-.file-tree{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'Courier New',monospace;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;}
-.tree-dir{color:var(--accent);}
-.tree-file{color:var(--text-primary);}
-.tree-special{color:var(--orange);}
-/* File Cards */
-.file-cards{display:flex;flex-direction:column;gap:12px;}
-.file-card{background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.file-card-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg-tertiary);cursor:pointer;user-select:none;transition:background .15s;}
-.file-card-header:hover{background:#2c3238;}
-.file-card-name{font-family:'Courier New',monospace;font-size:13px;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:8px;}
-.file-card-actions{display:flex;align-items:center;gap:8px;}
-.file-ext{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
-.ext-java{background:rgba(255,166,87,.2);color:var(--orange);}
-.ext-kts{background:rgba(188,140,255,.2);color:var(--purple);}
-.ext-py{background:rgba(88,166,255,.2);color:var(--accent);}
-.ext-feature{background:rgba(63,185,80,.2);color:var(--success);}
-.ext-yml,.ext-yaml{background:rgba(248,81,73,.2);color:var(--danger);}
-.ext-other{background:rgba(139,148,158,.2);color:var(--text-secondary);}
-.file-card-body{display:none;border-top:1px solid var(--border);}
-.file-card.open .file-card-body{display:block;}
-.file-card.open .file-card-chevron{transform:rotate(180deg);}
-.file-card-chevron{transition:transform .2s;color:var(--text-secondary);}
-pre.code-block{margin:0;padding:16px;overflow-x:auto;font-family:'Courier New',monospace;font-size:12px;line-height:1.65;color:var(--text-primary);background:var(--bg-primary);tab-size:2;white-space:pre;}
-.copy-btn-card{padding:5px 10px;font-size:12px;}
-.copy-btn-card.copied{border-color:var(--success);color:var(--success);}
+.char-counter{font-size:11px;color:var(--text-secondary);text-align:right;margin-top:3px;}
+/* Scrollbar */
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:var(--bg-secondary);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 ::-webkit-scrollbar-thumb:hover{background:#484f58;}
-@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.form-group.full{grid-column:1;}.header-title{font-size:18px;}.tab-btn{padding:10px 12px;font-size:12px;}}
-
+/* Responsive */
+@media(max-width:768px){
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  .header-title{font-size:16px;}
+  .tab-btn{padding:10px 12px;font-size:12px;}
+  .summary-cards{grid-template-columns:1fr 1fr;}
+}
   </style>
 </head>
 <body>
@@ -127,1598 +139,1253 @@ pre.code-block{margin:0;padding:16px;overflow-x:auto;font-family:'Courier New',m
 <header>
   <div class="container">
     <div class="header-inner">
-      <span class="header-logo">&#x1F916;</span>
-      <div>
-        <div class="header-title">QA Project Generator</div>
-        <div class="header-subtitle">Genera proyectos de automatizaci&#xF3;n QA listos para producci&#xF3;n</div>
+      <span class="header-logo">🤖</span>
+      <div class="header-info">
+        <div class="header-title">Generador Automático de Prompt para QA Funcional</div>
+        <div class="header-subtitle">Genera prompts técnicos completos para proyectos de automatización QA · 2026</div>
       </div>
+      <span class="header-badge">Senior QA · Prompt Generator</span>
     </div>
   </div>
 </header>
+
 <main>
   <div class="container">
     <div id="alert-container"></div>
+
     <div class="accordion" id="accordion">
 
-      <!-- Sec 1 -->
+      <!-- Sec 1: Proyecto -->
       <div class="acc-item open">
         <div class="acc-header" onclick="toggleSection(this)">
-          <div class="acc-header-left"><span>&#x1F4CB;</span>&nbsp;Informaci&#xF3;n del Proyecto</div>
-          <span class="acc-chevron">&#9660;</span>
+          <div class="acc-header-left">
+            <span class="acc-num">1</span>
+            📋 Información del Proyecto
+          </div>
+          <span class="acc-chevron">▼</span>
         </div>
         <div class="acc-body">
           <div class="form-grid">
             <div class="form-group">
-              <label for="projectName">Nombre del Proyecto<span class="req">*</span></label>
-              <input type="text" id="projectName" placeholder="my-qa-project" autocomplete="off">
+              <label for="projectName">Nombre Exacto del Proyecto<span class="req">*</span></label>
+              <input type="text" id="projectName" placeholder="BancoDigital-Web-Automation" autocomplete="off">
+              <span class="hint">Ejemplo: EcommercePro-QA, BancaMovil-Regression, HospitalApp-E2E</span>
             </div>
             <div class="form-group">
-              <label for="projectLanguage">Idioma del Proyecto</label>
-              <select id="projectLanguage">
-                <option value="es">Espa&#xF1;ol</option>
+              <label for="outputLang">Idioma de Salida del Prompt</label>
+              <select id="outputLang">
+                <option value="es">Español</option>
                 <option value="en">English</option>
               </select>
             </div>
             <div class="form-group full">
-              <label for="projectDescription">Descripci&#xF3;n del Proyecto</label>
-              <textarea id="projectDescription" rows="3" placeholder="Describe el prop&#xF3;sito y alcance del proyecto..."></textarea>
+              <label for="projectDescription">Descripción del Proyecto</label>
+              <textarea id="projectDescription" rows="3" placeholder="Ej: Plataforma web de banca digital con módulos de autenticación, transferencias, pagos de servicios y gestión de cuentas."></textarea>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sec 2 -->
+      <!-- Sec 2: Stack -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleSection(this)">
-          <div class="acc-header-left"><span>&#x2699;&#xFE0F;</span>&nbsp;Stack Tecnol&#xF3;gico</div>
-          <span class="acc-chevron">&#9660;</span>
+          <div class="acc-header-left">
+            <span class="acc-num">2</span>
+            ⚙️ Stack Tecnológico
+          </div>
+          <span class="acc-chevron">▼</span>
         </div>
         <div class="acc-body">
           <div class="form-grid">
             <div class="form-group">
               <label for="language">Lenguaje</label>
               <select id="language" onchange="onLanguageChange()">
-                <option value="java">Java 21</option>
+                <option value="java">Java 21 (LTS — Recomendado 2026)</option>
                 <option value="python">Python 3.12+</option>
               </select>
             </div>
             <div class="form-group">
               <label for="bddFramework">Framework BDD</label>
               <select id="bddFramework">
-                <option value="cucumber">Cucumber</option>
-                <option value="pytest-bdd">pytest-bdd</option>
-                <option value="behave">Behave</option>
+                <option value="cucumber">Cucumber 7.21.0 (siempre incluido)</option>
+                <option value="serenity">Serenity BDD 4.2.x</option>
               </select>
             </div>
             <div class="form-group">
               <label for="runner">Test Runner</label>
               <select id="runner">
-                <option value="junit5">JUnit 5</option>
-                <option value="testng">TestNG</option>
-                <option value="pytest">pytest</option>
+                <option value="junit5">JUnit 5.11.4 (por defecto)</option>
+                <option value="testng">TestNG 7.10.x</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="uiTool">Herramienta UI/API</label>
-              <select id="uiTool">
-                <option value="playwright">Playwright</option>
-                <option value="selenium">Selenium</option>
-                <option value="appium">Appium</option>
-                <option value="restassured">RestAssured</option>
+              <label for="uiTool">Herramienta UI / API</label>
+              <select id="uiTool" onchange="onUiToolChange()">
+                <option value="playwright">Playwright 1.50.0 (Recomendado 2026)</option>
+                <option value="selenium">Selenium 4.28+</option>
+                <option value="restassured">RestAssured 5.5.x (API)</option>
+                <option value="appium">Appium 9.x (Mobile)</option>
               </select>
             </div>
             <div class="form-group">
               <label for="buildTool">Build Tool</label>
               <select id="buildTool">
-                <option value="gradle-kts">Gradle (Kotlin DSL)</option>
-                <option value="maven">Maven</option>
-                <option value="pip">pip</option>
+                <option value="gradle-kts">Gradle 8.12 (Kotlin DSL) — por defecto</option>
+                <option value="maven">Maven 3.9.x</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="appType">Tipo de Aplicaci&#xF3;n</label>
+              <label for="appType">Tipo de Aplicación</label>
               <select id="appType">
                 <option value="web">Web</option>
-                <option value="mobile">Mobile</option>
-                <option value="api">API</option>
-                <option value="web-api">Web + API</option>
+                <option value="api">API REST / GraphQL</option>
+                <option value="mobile-android">Mobile Android</option>
+                <option value="mobile-ios">Mobile iOS</option>
+                <option value="hybrid">Híbrida (Web + API)</option>
+                <option value="hybrid-mobile">Híbrida (Web + Mobile)</option>
               </select>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sec 3 -->
+      <!-- Sec 3: Estrategia de Pruebas -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleSection(this)">
-          <div class="acc-header-left"><span>&#x1F9EA;</span>&nbsp;Estrategia de Pruebas</div>
-          <span class="acc-chevron">&#9660;</span>
+          <div class="acc-header-left">
+            <span class="acc-num">3</span>
+            🧪 Estrategia de Pruebas
+          </div>
+          <span class="acc-chevron">▼</span>
         </div>
         <div class="acc-body">
           <div class="form-grid">
             <div class="form-group full">
-              <label for="functionalDeps">Dependencias Funcionales</label>
-              <textarea id="functionalDeps" rows="3" placeholder="Ej: m&#xF3;dulo de autenticaci&#xF3;n depende del m&#xF3;dulo de usuarios..."></textarea>
+              <label for="functionalDeps">Dependencias Funcionales (opcional)</label>
+              <textarea id="functionalDeps" rows="3" placeholder="Ej: Este módulo requiere usuario registrado (Feat-000 - Registro de usuarios).&#10;El módulo de pagos depende del módulo de autenticación."></textarea>
+              <span class="hint">Se incluirán como contexto previo en los Background de los features.</span>
             </div>
             <div class="form-group full">
-              <label>Tipos de Escenarios</label>
+              <label>Tipos de Escenarios a Generar</label>
               <div class="checkbox-group" id="scenarioTypes">
-                <label class="checkbox-item"><input type="checkbox" value="positive" checked><span>&#x2705; Positivo</span></label>
-                <label class="checkbox-item"><input type="checkbox" value="negative" checked><span>&#x274C; Negativo</span></label>
-                <label class="checkbox-item"><input type="checkbox" value="boundary"><span>&#x1F4D0; Boundary</span></label>
-                <label class="checkbox-item"><input type="checkbox" value="e2e"><span>&#x1F504; E2E</span></label>
-                <label class="checkbox-item"><input type="checkbox" value="smoke" checked><span>&#x1F4A8; Smoke</span></label>
-                <label class="checkbox-item"><input type="checkbox" value="regression"><span>&#x1F501; Regression</span></label>
+                <label class="checkbox-item"><input type="checkbox" value="happy" checked><span>✅ Happy Path</span></label>
+                <label class="checkbox-item"><input type="checkbox" value="negative" checked><span>❌ Negativos</span></label>
+                <label class="checkbox-item"><input type="checkbox" value="boundary"><span>📐 Edge Cases / Valores Límite</span></label>
+                <label class="checkbox-item"><input type="checkbox" value="smoke" checked><span>💨 Smoke</span></label>
+                <label class="checkbox-item"><input type="checkbox" value="regression"><span>🔁 Regression (solo si se solicita)</span></label>
               </div>
             </div>
             <div class="form-group">
-              <label for="maxScenarios">M&#xE1;x. Escenarios por Feature</label>
-              <input type="number" id="maxScenarios" value="5" min="1" max="20">
+              <label for="maxScenarios">Máx. Escenarios por Feature</label>
+              <input type="number" id="maxScenarios" value="15" min="1" max="20">
+              <span class="hint">Máximo 15 recomendado. Genera en lotes si hay más.</span>
             </div>
             <div class="form-group">
               <label>Opciones de Feature</label>
               <label class="checkbox-item" style="display:inline-flex;width:auto;margin-top:4px;">
-                <input type="checkbox" id="featureBackground" checked><span>Incluir Background en features</span>
+                <input type="checkbox" id="featureBackground" checked><span>Incluir Background en cada feature</span>
               </label>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sec 4 -->
+      <!-- Sec 4: Módulos Especiales -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleSection(this)">
-          <div class="acc-header-left"><span>&#x1F527;</span>&nbsp;M&#xF3;dulos Especiales</div>
-          <span class="acc-chevron">&#9660;</span>
+          <div class="acc-header-left">
+            <span class="acc-num">4</span>
+            🔧 Módulos Especiales
+          </div>
+          <span class="acc-chevron">▼</span>
         </div>
         <div class="acc-body">
           <div class="checkbox-group">
-            <label class="checkbox-item"><input type="checkbox" id="dataDriven"><span>&#x1F4CA; Data-Driven Testing</span></label>
-            <label class="checkbox-item"><input type="checkbox" id="securityTesting"><span>&#x1F510; Security Testing</span></label>
-            <label class="checkbox-item"><input type="checkbox" id="contractTesting"><span>&#x1F4DC; Contract Testing</span></label>
-            <label class="checkbox-item"><input type="checkbox" id="schemaValidation"><span>&#x2714;&#xFE0F; Schema Validation</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="dataDriven"><span>📊 Data-Driven (Scenario Outline + Examples)</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="securityTesting"><span>🔒 Security Testing (OWASP Top 10)</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="contractTesting"><span>📜 Contract Testing (Pact)</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="schemaValidation"><span>✔️ Schema Validation (JSON Schema / OpenAPI)</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="accessibility"><span>♿ Accesibilidad (WCAG 2.1)</span></label>
           </div>
         </div>
       </div>
 
-      <!-- Sec 5 -->
+      <!-- Sec 5: Requisitos Funcionales -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleSection(this)">
-          <div class="acc-header-left"><span>&#x1F4DD;</span>&nbsp;Requisitos Funcionales</div>
-          <span class="acc-chevron">&#9660;</span>
+          <div class="acc-header-left">
+            <span class="acc-num">5</span>
+            📝 Requisitos Funcionales
+          </div>
+          <span class="acc-chevron">▼</span>
         </div>
         <div class="acc-body">
           <div class="form-group">
-            <label for="requirements">Pega aqu&#xED; los requisitos funcionales</label>
-            <textarea id="requirements" rows="8" placeholder="RF-001: El sistema debe permitir al usuario iniciar sesi&#xF3;n con credenciales v&#xE1;lidas&#10;RF-002: El sistema debe mostrar un mensaje de error cuando las credenciales son incorrectas..."></textarea>
-            <span class="hint">Los requisitos se usar&#xE1;n para generar escenarios de prueba relevantes.</span>
+            <label for="requirements">Pega aquí los requisitos funcionales del proyecto</label>
+            <textarea id="requirements" rows="10" placeholder="RF-001: El sistema debe permitir al usuario iniciar sesión con correo y contraseña válidos.&#10;RF-002: El sistema debe mostrar error 'Credenciales inválidas' cuando los datos sean incorrectos.&#10;RF-003: El sistema debe bloquear la cuenta tras 5 intentos fallidos consecutivos.&#10;RF-004: El usuario debe poder recuperar su contraseña vía correo electrónico.&#10;RF-005: La sesión debe expirar después de 30 minutos de inactividad." oninput="updateCharCount(this)"></textarea>
+            <div class="char-counter"><span id="req-chars">0</span> caracteres · Los requisitos guiarán la generación de escenarios en el prompt.</div>
           </div>
         </div>
       </div>
 
-      <!-- Sec 6 -->
+      <!-- Sec 6: Config Avanzada -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleSection(this)">
-          <div class="acc-header-left"><span>&#x1F680;</span>&nbsp;Configuraci&#xF3;n Avanzada</div>
-          <span class="acc-chevron">&#9660;</span>
+          <div class="acc-header-left">
+            <span class="acc-num">6</span>
+            🚀 Configuración Avanzada
+          </div>
+          <span class="acc-chevron">▼</span>
         </div>
         <div class="acc-body">
           <div class="form-grid">
             <div class="form-group">
-              <label for="reporting">Reporting</label>
+              <label for="reporting">Herramienta de Reporting</label>
               <select id="reporting">
-                <option value="allure">Allure</option>
-                <option value="extent">Extent Reports</option>
-                <option value="none">None</option>
+                <option value="allure">Allure 2.29+ + Cucumber Reporting</option>
+                <option value="extent">ExtentReports 5.x</option>
+                <option value="allure-extent">Allure + ExtentReports</option>
+                <option value="none">Sin reporte configurado</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="cicd">CI/CD</label>
+              <label for="cicd">CI/CD Pipeline</label>
               <select id="cicd">
-                <option value="none">None</option>
                 <option value="github-actions">GitHub Actions</option>
-                <option value="jenkins">Jenkins</option>
-                <option value="gitlab-ci">GitLab CI</option>
+                <option value="jenkins">Jenkins (Jenkinsfile)</option>
+                <option value="gitlab-ci">GitLab CI (.gitlab-ci.yml)</option>
+                <option value="none">Sin CI/CD</option>
               </select>
             </div>
             <div class="form-group full">
               <label>Opciones Adicionales</label>
               <div class="checkbox-group">
-                <label class="checkbox-item"><input type="checkbox" id="multiEnv" onchange="onMultiEnvChange()"><span>&#x1F30D; Multi-Environment</span></label>
-                <label class="checkbox-item"><input type="checkbox" id="parallelExecution"><span>&#x26A1; Ejecuci&#xF3;n Paralela</span></label>
-                <label class="checkbox-item"><input type="checkbox" id="retryMechanism"><span>&#x1F504; Retry Mechanism</span></label>
+                <label class="checkbox-item"><input type="checkbox" id="multiEnv" checked onchange="onMultiEnvChange()"><span>🌍 Multi-Ambiente (dev/qa/staging/prod)</span></label>
+                <label class="checkbox-item"><input type="checkbox" id="parallelExecution" checked><span>⚡ Ejecución Paralela</span></label>
+                <label class="checkbox-item"><input type="checkbox" id="retryMechanism" checked><span>🔄 Retry Mechanism</span></label>
+                <label class="checkbox-item"><input type="checkbox" id="headlessMode" checked><span>👻 Modo Headless + Headed</span></label>
+                <label class="checkbox-item"><input type="checkbox" id="testDataMgmt" checked><span>🗄️ Test Data Management (JSON/YAML)</span></label>
               </div>
             </div>
-            <div class="form-group hidden" id="envGroup">
+            <div class="form-group" id="envGroup">
               <label for="environments">Ambientes (separados por coma)</label>
-              <input type="text" id="environments" value="dev,staging,prod" placeholder="dev,staging,prod">
+              <input type="text" id="environments" value="dev,qa,staging,prod" placeholder="dev,qa,staging,prod">
             </div>
           </div>
         </div>
       </div>
+
     </div><!-- /accordion -->
 
     <!-- Generate Button -->
     <div class="generate-wrapper">
-      <button class="btn-generate" id="generateBtn" onclick="generateProject()">
+      <button class="btn-generate" id="generateBtn" onclick="generatePrompt()">
         <div class="spinner"></div>
-        <span class="btn-label">&#x26A1; Generar Proyecto</span>
+        <span class="btn-label">🤖 Generar Prompt Completo</span>
       </button>
     </div>
 
     <!-- OUTPUT SECTION -->
     <div id="output-section" class="hidden">
       <div class="output-header">
-        <div class="output-header-title">&#x1F4E6; Proyecto Generado</div>
+        <div class="output-header-title">📄 Prompt Generado</div>
         <div class="output-actions">
-          <button class="btn" onclick="copyAll()">&#x1F4CB; Copiar Todo</button>
-          <button class="btn btn-primary" onclick="downloadZip()">&#x1F4E6; Descargar ZIP</button>
+          <button class="btn" id="copyBtn" onclick="copyPrompt()">📋 Copiar Prompt</button>
+          <button class="btn" onclick="regenerate()">🔄 Regenerar</button>
         </div>
       </div>
+
       <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('arch',this)">&#x1F3D7;&#xFE0F; Arquitectura</button>
-        <button class="tab-btn" onclick="switchTab('tree',this)">&#x1F5C2;&#xFE0F; &#xC1;rbol del Proyecto</button>
-        <button class="tab-btn" onclick="switchTab('files',this)">&#x1F4C4; Archivos Generados</button>
+        <button class="tab-btn active" onclick="switchTab('preview',this)">👁️ Preview Markdown</button>
+        <button class="tab-btn" onclick="switchTab('raw',this)">📃 Markdown Raw</button>
+        <button class="tab-btn" onclick="switchTab('summary',this)">📊 Resumen Stack</button>
       </div>
-      <div id="tab-arch" class="tab-content active"></div>
-      <div id="tab-tree" class="tab-content"></div>
-      <div id="tab-files" class="tab-content"></div>
+
+      <div id="tab-preview" class="tab-content active">
+        <div class="md-preview" id="md-preview-content"></div>
+      </div>
+      <div id="tab-raw" class="tab-content">
+        <div class="raw-prompt" id="raw-prompt-content"></div>
+      </div>
+      <div id="tab-summary" class="tab-content">
+        <div id="summary-content"></div>
+      </div>
     </div>
+
   </div>
 </main>
 
 <script>
-
-// ═══ UI ═══════════════════════════════
-function toggleSection(hdr) {
-  hdr.closest('.acc-item').classList.toggle('open');
-}
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
+// ══════════════════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════════════════
+function toggleSection(hdr){hdr.closest('.acc-item').classList.toggle('open');}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
 }
-function onLanguageChange() {
-  const lang = document.getElementById('language').value;
-  const bdd = document.getElementById('bddFramework');
-  const runner = document.getElementById('runner');
-  const build = document.getElementById('buildTool');
-  if (lang === 'python') {
-    bdd.innerHTML = '<option value="pytest-bdd">pytest-bdd</option><option value="behave">Behave</option>';
-    runner.innerHTML = '<option value="pytest">pytest</option>';
-    build.innerHTML = '<option value="pip">pip</option><option value="poetry">Poetry</option>';
-  } else {
-    bdd.innerHTML = '<option value="cucumber">Cucumber</option><option value="serenity">Serenity BDD</option>';
-    runner.innerHTML = '<option value="junit5">JUnit 5</option><option value="testng">TestNG</option>';
-    build.innerHTML = '<option value="gradle-kts">Gradle (Kotlin DSL)</option><option value="maven">Maven</option>';
+function onLanguageChange(){
+  const lang=document.getElementById('language').value;
+  const bdd=document.getElementById('bddFramework');
+  const runner=document.getElementById('runner');
+  const build=document.getElementById('buildTool');
+  if(lang==='python'){
+    bdd.innerHTML='<option value="behave">Behave 1.2.6</option><option value="pytest-bdd">pytest-bdd 7.x</option>';
+    runner.innerHTML='<option value="pytest">pytest 8.x</option>';
+    build.innerHTML='<option value="pip">pip + requirements.txt</option><option value="poetry">Poetry 1.8+</option>';
+  }else{
+    bdd.innerHTML='<option value="cucumber">Cucumber 7.21.0 (siempre incluido)</option><option value="serenity">Serenity BDD 4.2.x</option>';
+    runner.innerHTML='<option value="junit5">JUnit 5.11.4 (por defecto)</option><option value="testng">TestNG 7.10.x</option>';
+    build.innerHTML='<option value="gradle-kts">Gradle 8.12 (Kotlin DSL) — por defecto</option><option value="maven">Maven 3.9.x</option>';
   }
 }
-function onMultiEnvChange() {
-  const checked = document.getElementById('multiEnv').checked;
-  document.getElementById('envGroup').classList.toggle('hidden', !checked);
+function onUiToolChange(){
+  const tool=document.getElementById('uiTool').value;
+  const appType=document.getElementById('appType');
+  if(tool==='appium'){
+    if(!['mobile-android','mobile-ios','hybrid-mobile'].includes(appType.value)){
+      appType.value='mobile-android';
+    }
+  }
 }
-function showAlert(msg, type) {
-  const c = document.getElementById('alert-container');
-  c.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
-  setTimeout(() => { c.innerHTML = ''; }, 5000);
+function onMultiEnvChange(){
+  const checked=document.getElementById('multiEnv').checked;
+  document.getElementById('envGroup').classList.toggle('hidden',!checked);
 }
-function toggleFileCard(hdr) {
-  hdr.closest('.file-card').classList.toggle('open');
+function updateCharCount(el){
+  document.getElementById('req-chars').textContent=el.value.length;
 }
-function copyCode(btn) {
-  const code = btn.closest('.file-card').querySelector('pre').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    btn.textContent = '\u2705 Copiado';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '\uD83D\uDCCB Copiar'; btn.classList.remove('copied'); }, 2000);
-  });
+function showAlert(msg,type){
+  const c=document.getElementById('alert-container');
+  c.innerHTML='<div class="alert alert-'+type+'">'+msg+'</div>';
+  setTimeout(()=>{c.innerHTML='';},5000);
 }
-function copyAll() {
-  if (!window._generatedFiles) return;
-  const all = window._generatedFiles.map(f => '// === ' + f.path + ' ===\n' + f.content).join('\n\n');
-  navigator.clipboard.writeText(all).then(() => showAlert('\u2705 Todo el c\xF3digo copiado al portapapeles', 'success'));
+function regenerate(){
+  document.getElementById('generateBtn').click();
 }
-// ═══ CONFIG ═══════════════════════════
-function getConfig() {
-  const scenarioTypes = [];
-  document.querySelectorAll('#scenarioTypes input:checked').forEach(cb => scenarioTypes.push(cb.value));
-  return {
-    projectName: document.getElementById('projectName').value.trim(),
-    projectDescription: document.getElementById('projectDescription').value.trim(),
-    projectLanguage: document.getElementById('projectLanguage').value,
-    language: document.getElementById('language').value,
-    bddFramework: document.getElementById('bddFramework').value,
-    runner: document.getElementById('runner').value,
-    uiTool: document.getElementById('uiTool').value,
-    buildTool: document.getElementById('buildTool').value,
-    appType: document.getElementById('appType').value,
-    functionalDeps: document.getElementById('functionalDeps').value.trim(),
-    featureBackground: document.getElementById('featureBackground').checked,
+
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+function getConfig(){
+  const scenarioTypes=[];
+  document.querySelectorAll('#scenarioTypes input:checked').forEach(cb=>scenarioTypes.push(cb.value));
+  return{
+    projectName:document.getElementById('projectName').value.trim(),
+    projectDescription:document.getElementById('projectDescription').value.trim(),
+    outputLang:document.getElementById('outputLang').value,
+    language:document.getElementById('language').value,
+    bddFramework:document.getElementById('bddFramework').value,
+    bddVersion:getBDDVersion(),
+    runner:document.getElementById('runner').value,
+    runnerVersion:getRunnerVersion(),
+    uiTool:document.getElementById('uiTool').value,
+    uiToolVersion:getUIToolVersion(),
+    buildTool:document.getElementById('buildTool').value,
+    appType:document.getElementById('appType').value,
+    functionalDeps:document.getElementById('functionalDeps').value.trim(),
+    featureBackground:document.getElementById('featureBackground').checked,
     scenarioTypes,
-    maxScenarios: parseInt(document.getElementById('maxScenarios').value) || 5,
-    dataDriven: document.getElementById('dataDriven').checked,
-    securityTesting: document.getElementById('securityTesting').checked,
-    contractTesting: document.getElementById('contractTesting').checked,
-    schemaValidation: document.getElementById('schemaValidation').checked,
-    requirements: document.getElementById('requirements').value.trim(),
-    multiEnv: document.getElementById('multiEnv').checked,
-    environments: document.getElementById('environments').value.trim(),
-    reporting: document.getElementById('reporting').value,
-    parallelExecution: document.getElementById('parallelExecution').checked,
-    retryMechanism: document.getElementById('retryMechanism').checked,
-    cicd: document.getElementById('cicd').value
+    maxScenarios:parseInt(document.getElementById('maxScenarios').value)||15,
+    dataDriven:document.getElementById('dataDriven').checked,
+    securityTesting:document.getElementById('securityTesting').checked,
+    contractTesting:document.getElementById('contractTesting').checked,
+    schemaValidation:document.getElementById('schemaValidation').checked,
+    accessibility:document.getElementById('accessibility').checked,
+    requirements:document.getElementById('requirements').value.trim(),
+    multiEnv:document.getElementById('multiEnv').checked,
+    environments:document.getElementById('environments').value.trim(),
+    reporting:document.getElementById('reporting').value,
+    cicd:document.getElementById('cicd').value,
+    parallelExecution:document.getElementById('parallelExecution').checked,
+    retryMechanism:document.getElementById('retryMechanism').checked,
+    headlessMode:document.getElementById('headlessMode').checked,
+    testDataMgmt:document.getElementById('testDataMgmt').checked,
   };
 }
-function toJavaPkg(n) { return n.toLowerCase().replace(/[^a-z0-9]/g,''); }
-function toPyModule(n) { return n.toLowerCase().replace(/[^a-z0-9]/g,'_'); }
-function toTitle(n) { return n.replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function getBDDVersion(){
+  const v=document.getElementById('bddFramework').value;
+  const lang=document.getElementById('language').value;
+  if(lang==='python') return v.includes('pytest')?'7.2.0':'1.2.6';
+  return v.includes('serenity')?'4.2.x':'7.21.0';
+}
+function getRunnerVersion(){
+  const v=document.getElementById('runner').value;
+  if(v.includes('junit5')) return '5.11.4';
+  if(v.includes('testng')) return '7.10.x';
+  return '8.x';
+}
+function getUIToolVersion(){
+  const v=document.getElementById('uiTool').value;
+  const m={playwright:'1.50.0',selenium:'4.28+',restassured:'5.5.x',appium:'9.x'};
+  return m[v]||'latest';
+}
+function getLangDisplay(cfg){
+  return cfg.language==='java'?'Java 21 (LTS)':'Python 3.12+';
+}
+function getLangVersion(cfg){
+  return cfg.language==='java'?'21':'3.12+';
+}
+function getBuildDisplay(cfg){
+  const m={'gradle-kts':'Gradle 8.12 (Kotlin DSL)','maven':'Maven 3.9.x','pip':'pip + requirements.txt','poetry':'Poetry 1.8+'};
+  return m[cfg.buildTool]||cfg.buildTool;
+}
+function getAppTypeDisplay(cfg){
+  const m={web:'Web',api:'API REST / GraphQL','mobile-android':'Mobile Android','mobile-ios':'Mobile iOS',hybrid:'Híbrida (Web + API)','hybrid-mobile':'Híbrida (Web + Mobile)'};
+  return m[cfg.appType]||cfg.appType;
+}
+function getScenarioLabels(cfg){
+  const m={happy:'✅ Happy Path',negative:'❌ Negativos',boundary:'📐 Edge Cases / Valores Límite',smoke:'💨 Smoke',regression:'🔁 Regression'};
+  return cfg.scenarioTypes.map(t=>m[t]||t);
+}
+function getReportingDisplay(cfg){
+  const m={allure:'Allure 2.29+ + Cucumber Reporting',extent:'ExtentReports 5.x','allure-extent':'Allure 2.29+ + ExtentReports 5.x',none:'Sin reporte'};
+  return m[cfg.reporting]||cfg.reporting;
+}
+function getCICDDisplay(cfg){
+  const m={'github-actions':'GitHub Actions','jenkins':'Jenkins','gitlab-ci':'GitLab CI',none:'Sin CI/CD'};
+  return m[cfg.cicd]||cfg.cicd;
+}
+function getUIToolDisplay(cfg){
+  const m={playwright:'Playwright',selenium:'Selenium',restassured:'RestAssured',appium:'Appium'};
+  return m[cfg.uiTool]||cfg.uiTool;
+}
 
-// ═══ GENERATE ═════════════════════════
-function generateProject() {
-  const config = getConfig();
-  if (!config.projectName) {
-    showAlert('\u26A0\uFE0F El nombre del proyecto es obligatorio', 'danger');
+// ══════════════════════════════════════════════════════════════
+// MAIN GENERATE
+// ══════════════════════════════════════════════════════════════
+function generatePrompt(){
+  const config=getConfig();
+  if(!config.projectName){
+    showAlert('⚠️ El nombre del proyecto es obligatorio','danger');
     document.getElementById('projectName').focus();
     return;
   }
-  const btn = document.getElementById('generateBtn');
+  const btn=document.getElementById('generateBtn');
   btn.classList.add('loading');
-  btn.disabled = true;
-  setTimeout(() => {
-    try {
-      let files = config.language === 'java' ? generateJavaFiles(config) : generatePythonFiles(config);
-      window._generatedFiles = files;
-      window._generatedConfig = config;
-      renderOutput(files, config);
+  btn.disabled=true;
+  setTimeout(()=>{
+    try{
+      const prompt=buildPrompt(config);
+      window._lastPrompt=prompt;
+      window._lastConfig=config;
+      renderOutput(prompt,config);
       document.getElementById('output-section').classList.remove('hidden');
-      document.getElementById('output-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      showAlert('\u2705 Proyecto generado exitosamente (' + files.length + ' archivos)', 'success');
-    } catch(e) {
-      showAlert('\u274C Error generando proyecto: ' + e.message, 'danger');
+      document.getElementById('output-section').scrollIntoView({behavior:'smooth',block:'start'});
+      showAlert('✅ Prompt generado exitosamente. Copia y úsalo en tu IA preferida.','success');
+    }catch(e){
+      showAlert('❌ Error al generar: '+e.message,'danger');
       console.error(e);
-    } finally {
+    }finally{
       btn.classList.remove('loading');
-      btn.disabled = false;
+      btn.disabled=false;
     }
-  }, 600);
+  },500);
 }
 
-// ═══ RENDER OUTPUT ════════════════════
-function renderOutput(files, cfg) {
-  renderArchTab(cfg);
-  renderTreeTab(files, cfg);
-  renderFilesTab(files);
-}
-function renderArchTab(cfg) {
-  const rLabel = {allure:'Allure Report',extent:'Extent Reports',none:'Sin reporte'}[cfg.reporting]||cfg.reporting;
-  const ciLabel = {none:'\u2014','github-actions':'GitHub Actions',jenkins:'Jenkins','gitlab-ci':'GitLab CI'}[cfg.cicd]||cfg.cicd;
-  const rows = [
-    ['Proyecto','<span class="badge badge-blue">'+escHtml(cfg.projectName)+'</span>'],
-    ['Lenguaje', cfg.language==='java'?'Java 21':'Python 3.12+'],
-    ['BDD Framework','<span class="badge badge-green">'+escHtml(cfg.bddFramework)+'</span>'],
-    ['Test Runner', escHtml(cfg.runner)],
-    ['UI/API Tool','<span class="badge badge-orange">'+escHtml(cfg.uiTool)+'</span>'],
-    ['Build Tool', escHtml(cfg.buildTool)],
-    ['Tipo App', escHtml(cfg.appType)],
-    ['Reporting', escHtml(rLabel)],
-    ['CI/CD', escHtml(ciLabel)],
-    ['Multi-Env', cfg.multiEnv ? '<span class="badge badge-purple">'+escHtml(cfg.environments)+'</span>' : '\u2014'],
-    ['Paralelo', cfg.parallelExecution?'\u2705 Habilitado':'\u2014'],
-    ['Retry', cfg.retryMechanism?'\u2705 Habilitado':'\u2014'],
-    ['Data-Driven', cfg.dataDriven?'\u2705 Habilitado':'\u2014'],
-    ['Escenarios', escHtml(cfg.scenarioTypes.join(', ')||'\u2014')],
-  ];
-  let t = '<table class="arch-table"><thead><tr><th>Componente</th><th>Valor</th></tr></thead><tbody>';
-  rows.forEach(r => { t += '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'; });
-  t += '</tbody></table>';
-  const diag = cfg.language === 'java' ? javaDiagram() : pythonDiagram();
-  document.getElementById('tab-arch').innerHTML = t + '<div class="arch-diagram">' + escHtml(diag) + '</div>';
-}
-function javaDiagram() {
-  return [
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         TEST EXECUTION LAYER (JUnit Platform + Cucumber)        \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         STEP DEFINITIONS  (LoginSteps / CheckoutSteps / ...)     \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         PAGE OBJECT MODEL (BasePage \u25BA LoginPage / ...)          \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         PLAYWRIGHT ENGINE  Browser \u25BA Context \u25BA Page             \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502   SUPPORT: Hooks | ConfigManager | ScenarioContext | Allure     \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  ].join('\n');
-}
-function pythonDiagram() {
-  return [
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         TEST EXECUTION LAYER  (pytest + pytest-bdd)              \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         STEP DEFINITIONS  (tests/test_login.py / ...)            \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         PAGE OBJECT MODEL  (BasePage \u25BA LoginPage / ...)         \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502         PLAYWRIGHT ENGINE  sync_playwright \u25BA Browser \u25BA Page       \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  '                          \u2502',
-  '\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25BC\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510',
-  '\u2502   SUPPORT: conftest.py | .env.dev | pytest.ini | Allure         \u2502',
-  '\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518',
-  ].join('\n');
-}
-function renderTreeTab(files) {
-  const tree = {};
-  files.forEach(f => {
-    const parts = f.path.split('/');
-    let node = tree;
-    parts.forEach((p, i) => {
-      if (i === parts.length - 1) { node[p] = null; }
-      else { if (!node[p]) node[p] = {}; node = node[p]; }
-    });
-  });
-  document.getElementById('tab-tree').innerHTML = '<div class="file-tree">' + renderNode(tree, '') + '</div>';
-}
-function getIcon(name) {
-  const ext = name.split('.').pop().toLowerCase();
-  const m = { java:'\u2615', py:'\uD83D\uDC0D', feature:'\uD83E\uDD52', yml:'\u2699\uFE0F', yaml:'\u2699\uFE0F', kts:'\uD83D\uDC18', gradle:'\uD83D\uDC18', md:'\uD83D\uDCF6', txt:'\uD83D\uDCC4', ini:'\uD83D\uDD27', conf:'\uD83D\uDD27', properties:'\uD83D\uDD27' };
-  return m[ext] || '\uD83D\uDCC4';
-}
-function renderNode(node, prefix) {
-  let h = '';
-  const keys = Object.keys(node).sort((a,b)=>{
-    const ad=node[a]!==null, bd=node[b]!==null;
-    if(ad&&!bd)return -1; if(!ad&&bd)return 1; return a.localeCompare(b);
-  });
-  keys.forEach((k, i) => {
-    const last = i === keys.length - 1;
-    const conn = last ? '\u2514\u2500\u2500 ' : '\u251C\u2500\u2500 ';
-    const child = node[k];
-    if (child !== null) {
-      h += prefix + conn + '<span class="tree-dir">\uD83D\uDCC1 ' + escHtml(k) + '/</span>\n';
-      h += renderNode(child, prefix + (last ? '    ' : '\u2502   '));
-    } else {
-      const sp = ['.gitignore','.env.dev','.env.staging','.env.prod','Jenkinsfile','README.md'].includes(k)||k.startsWith('.');
-      h += prefix + conn + '<span class="'+(sp?'tree-special':'tree-file')+'">' + getIcon(k) + ' ' + escHtml(k) + '</span>\n';
-    }
-  });
-  return h;
-}
-function renderFilesTab(files) {
-  let h = '<div class="file-cards">';
-  files.forEach((f, i) => {
-    const ext = f.path.split('.').pop().toLowerCase();
-    const ec = {java:'ext-java',kts:'ext-kts',py:'ext-py',feature:'ext-feature',yml:'ext-yml',yaml:'ext-yaml'}[ext]||'ext-other';
-    const op = i < 2 ? ' open' : '';
-    h += '<div class="file-card' + op + '">'
-      + '<div class="file-card-header" onclick="toggleFileCard(this)">'
-      + '<div class="file-card-name">' + getIcon(f.path.split('/').pop())
-      + ' <span>' + escHtml(f.path) + '</span>'
-      + ' <span class="file-ext ' + ec + '">' + escHtml(ext) + '</span></div>'
-      + '<div class="file-card-actions">'
-      + '<button class="btn copy-btn-card" onclick="event.stopPropagation();copyCode(this)">\uD83D\uDCCB Copiar</button>'
-      + '<span class="file-card-chevron">\u25BC</span></div></div>'
-      + '<div class="file-card-body"><pre class="code-block">' + escHtml(f.content) + '</pre></div></div>';
-  });
-  h += '</div>';
-  document.getElementById('tab-files').innerHTML = h;
+// ══════════════════════════════════════════════════════════════
+// PROMPT BUILDER
+// ══════════════════════════════════════════════════════════════
+function buildPrompt(c){
+  const isJava=c.language==='java';
+  const isPW=c.uiTool==='playwright';
+  const isGradle=c.buildTool==='gradle-kts';
+  const isMaven=c.buildTool==='maven';
+  const scenarioLabels=getScenarioLabels(c);
+  const appDisplay=getAppTypeDisplay(c);
+  const buildDisplay=getBuildDisplay(c);
+  const reportDisplay=getReportingDisplay(c);
+  const cicdDisplay=getCICDDisplay(c);
+  const uiDisplay=getUIToolDisplay(c);
+
+  const envList=c.multiEnv?c.environments.split(',').map(e=>e.trim()).filter(Boolean):['qa'];
+
+  // BDD Framework name clean
+  const bddName=c.bddFramework==='cucumber'?'Cucumber':
+                c.bddFramework==='serenity'?'Serenity BDD':
+                c.bddFramework==='behave'?'Behave':'pytest-bdd';
+
+  const runnerName=c.runner==='junit5'?'JUnit 5':c.runner==='testng'?'TestNG':'pytest';
+
+  // Build the prompt sections
+  let parts=[];
+
+  // ROLE
+  parts.push(`# Instrucciones para Generador de Proyecto QA Automation
+
+Eres un **Senior QA Automation Engineer** con +12 años de experiencia y profundo conocimiento en arquitectura de software, patrones de diseño de pruebas y mejores prácticas de automatización funcional actualizadas al **2026**.
+
+Tu tarea es generar un **proyecto completo de automatización QA funcional** listo para clonar y ejecutar, basado en los siguientes parámetros y requisitos.`);
+
+  // PROJECT INFO
+  parts.push(`## 📋 Datos del Proyecto
+
+| Campo | Valor |
+|---|---|
+| **Nombre del Proyecto** | \`${c.projectName}\` |
+| **Tipo de Aplicación** | ${appDisplay} |
+| **Idioma de salida** | ${c.outputLang==='es'?'Español':'English'} |${c.projectDescription?`
+| **Descripción** | ${c.projectDescription} |`:''}`);
+
+  // STACK
+  parts.push(`## ⚙️ Stack Tecnológico Seleccionado
+
+> Usa las versiones **ESTABLES MÁS RECIENTES** indicadas. Todas son las últimas estables al año 2026.
+
+| Componente | Tecnología | Versión |
+|---|---|---|
+| **Lenguaje** | ${getLangDisplay(c)} | ${getLangVersion(c)} |
+| **Framework BDD** | ${bddName} | ${c.bddVersion} |
+| **Test Runner** | ${runnerName} | ${c.runnerVersion} |
+| **UI / API Tool** | ${uiDisplay} | ${c.uiToolVersion} |
+| **Build Tool** | ${buildDisplay} | — |
+| **Reporting** | ${reportDisplay} | — |
+| **CI/CD** | ${cicdDisplay} | — |`);
+
+  // DEPENDENCIES
+  if(isJava){
+    parts.push(buildJavaDepsSection(c,isGradle,isPW));
+  }else{
+    parts.push(buildPythonDepsSection(c));
+  }
+
+  // TEST STRATEGY
+  let stratSection=`## 🧪 Estrategia de Pruebas
+
+### Tipos de Escenarios a Generar
+${scenarioLabels.map(s=>`- ${s}`).join('\n')}
+
+### Reglas de Escenarios
+- **Máximo ${c.maxScenarios} escenarios por archivo .feature** (genera en lotes si hay más).
+- Cada escenario debe tener **título descriptivo**, **Given/When/Then** bien definidos.
+- Los escenarios de Regression solo se generan si se solicitan explícitamente.
+- Priorizar cobertura funcional real sobre cantidad de escenarios.`;
+
+  if(c.functionalDeps){
+    stratSection+=`\n\n### Dependencias Funcionales\n${c.functionalDeps.split('\n').map(l=>`> ${l}`).join('\n')}`;
+  }
+
+  if(c.featureBackground){
+    stratSection+=`\n\n### Background en Features
+- **Incluir** sección \`Background:\` en cada archivo .feature con los pasos de precondición.
+- El Background debe reflejar el estado mínimo necesario para ejecutar los escenarios del feature.`;
+  }
+
+  // Special modules
+  let specialMods=[];
+  if(c.dataDriven) specialMods.push('- **📊 Data-Driven Testing**: Usar `Scenario Outline` + tabla `Examples` para cubrir múltiples conjuntos de datos. Separar datos en archivos externos (JSON/YAML).');
+  if(c.securityTesting) specialMods.push('- **🔒 Security Testing (OWASP Top 10)**: Incluir escenarios de SQL Injection, XSS, CSRF, autenticación débil, exposición de datos sensibles según aplique al tipo de app.');
+  if(c.contractTesting) specialMods.push('- **📜 Contract Testing (Pact)**: Configurar Pact Provider/Consumer tests. Incluir `PactVerificationTest` con anotaciones correspondientes.');
+  if(c.schemaValidation) specialMods.push('- **✔️ Schema Validation**: Validar respuestas API contra esquemas JSON Schema (Draft-07) / OpenAPI 3.x. Incluir archivos de schema en `src/test/resources/schemas/`.');
+  if(c.accessibility) specialMods.push('- **♿ Accesibilidad (WCAG 2.1)**: Incluir validaciones de accesibilidad básica con Axe-core (Playwright) o similar. Reportar violaciones en el informe de pruebas.');
+  if(specialMods.length>0){
+    stratSection+=`\n\n### Módulos Especiales Activados\n${specialMods.join('\n')}`;
+  }
+
+  parts.push(stratSection);
+
+  // REQUIREMENTS
+  if(c.requirements){
+    parts.push(`## 📝 Requisitos Funcionales del Proyecto
+
+Los siguientes requisitos deben guiar la generación de los archivos \`.feature\` y los step definitions:
+
+\`\`\`
+${c.requirements}
+\`\`\``);
+  }
+
+  // OUTPUT EXPECTED
+  parts.push(buildOutputSection(c,isJava,isPW,isGradle,isMaven,appDisplay,buildDisplay,envList,reportDisplay,cicdDisplay));
+
+  // BEST PRACTICES
+  parts.push(buildBestPracticesSection(c,isJava,isPW));
+
+  // FORMAT
+  parts.push(`## 📤 Formato de Respuesta Esperado
+
+1. **Primero**: Resumen de arquitectura elegida + versiones exactas de todas las dependencias.
+2. **Luego**: Árbol de carpetas completo con todos los archivos del proyecto.
+3. **Finalmente**: Contenido completo de **cada archivo**, en bloques de código markdown con el lenguaje correcto, precedidos por la ruta relativa del archivo.
+
+Ejemplo de formato por archivo:
+\`\`\`
+### \`src/test/resources/features/login.feature\`
+
+\`\`\`gherkin
+Feature: Autenticación de usuario
+  ...
+\`\`\`
+\`\`\`
+
+> **Importante**: Genera el proyecto **completo y funcional**. No uses placeholders ni omitas archivos. Si el proyecto es muy grande, genera los archivos principales primero e indica qué archivos faltan para una segunda iteración.`);
+
+  return parts.join('\n\n---\n\n');
 }
 
-// ═══ JAVA FILE GENERATION ═════════════
-function generateJavaFiles(cfg) {
-  const pkg = toJavaPkg(cfg.projectName) || 'myproject';
-  const pkgPath = 'com/' + pkg;
-  const pkgName = 'com.' + pkg;
-  const title = toTitle(cfg.projectName);
-  const files = [];
-  const envs = cfg.multiEnv ? cfg.environments.split(',').map(e=>e.trim()) : ['dev','staging'];
+function buildJavaDepsSection(c,isGradle,isPW){
+  let content=`## 📦 Dependencias y Versiones (Java)
 
-  // settings.gradle.kts
-  files.push({ path: 'settings.gradle.kts',
-    content: 'rootProject.name = "' + cfg.projectName + '"\n'
-  });
+### Versiones Exactas a Usar (2026 — Estables)
 
-  // build.gradle.kts
-  const allureDep = cfg.reporting === 'allure'
-    ? '\n    testImplementation("io.qameta.allure:allure-cucumber7-jvm:2.29.0")'
-    : '';
-  const retryDep = cfg.retryMechanism
-    ? '\n    testImplementation("io.github.artsok:rerunner-jupiter:2.1.6")'
-    : '';
-  const parallelCfg = cfg.parallelExecution
-    ? '\n    systemProperty("cucumber.execution.parallel.enabled", "true")\n    systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")'
-    : '';
-  files.push({ path: 'build.gradle.kts', content:
-`plugins {
+| Librería | GroupId:ArtifactId | Versión |
+|---|---|---|
+| **Cucumber Java** | \`io.cucumber:cucumber-java\` | \`7.21.0\` |
+| **Cucumber JUnit 5** | \`io.cucumber:cucumber-junit-platform-engine\` | \`7.21.0\` |
+| **JUnit Jupiter API** | \`org.junit.jupiter:junit-jupiter-api\` | \`5.11.4\` |
+| **JUnit Platform Launcher** | \`org.junit.platform:junit-platform-launcher\` | \`1.11.4\` |`;
+  if(isPW){
+    content+=`\n| **Playwright Java** | \`com.microsoft.playwright:playwright\` | \`1.50.0\` |`;
+  }else if(c.uiTool==='selenium'){
+    content+=`\n| **Selenium Java** | \`org.seleniumhq.selenium:selenium-java\` | \`4.28.0\` |`;
+    content+=`\n| **WebDriverManager** | \`io.github.bonigarcia:webdrivermanager\` | \`5.9.3\` |`;
+  }else if(c.uiTool==='restassured'){
+    content+=`\n| **RestAssured** | \`io.rest-assured:rest-assured\` | \`5.5.0\` |`;
+    content+=`\n| **Jackson Databind** | \`com.fasterxml.jackson.core:jackson-databind\` | \`2.18.2\` |`;
+  }else if(c.uiTool==='appium'){
+    content+=`\n| **Appium Java Client** | \`io.appium:java-client\` | \`9.3.0\` |`;
+  }
+  if(c.reporting==='allure'||c.reporting==='allure-extent'){
+    content+=`\n| **Allure Cucumber** | \`io.qameta.allure:allure-cucumber7-jvm\` | \`2.29.0\` |`;
+    content+=`\n| **Allure JUnit 5** | \`io.qameta.allure:allure-junit5\` | \`2.29.0\` |`;
+  }
+  if(c.reporting==='extent'||c.reporting==='allure-extent'){
+    content+=`\n| **ExtentReports** | \`com.aventstack:extentreports\` | \`5.1.2\` |`;
+  }
+  if(c.contractTesting){
+    content+=`\n| **Pact JVM Consumer** | \`au.com.dius.pact.consumer:junit5\` | \`4.6.17\` |`;
+    content+=`\n| **Pact JVM Provider** | \`au.com.dius.pact.provider:junit5\` | \`4.6.17\` |`;
+  }
+  if(c.schemaValidation){
+    content+=`\n| **JSON Schema Validator** | \`io.rest-assured:json-schema-validator\` | \`5.5.0\` |`;
+  }
+  content+=`\n| **Lombok** | \`org.projectlombok:lombok\` | \`1.18.36\` |`;
+  content+=`\n| **SLF4J + Logback** | \`ch.qos.logback:logback-classic\` | \`1.5.15\` |`;
+
+  if(isGradle){
+    content+=`\n\n### Archivo de Build: \`build.gradle.kts\`
+
+\`\`\`kotlin
+plugins {
     java
     id("io.qameta.allure") version "2.12.0"
 }
 
-group = "${pkgName}"
+group = "com.${c.projectName.toLowerCase().replace(/[^a-z0-9]/g,'')}"
 version = "1.0.0"
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
     mavenCentral()
 }
 
-val cucumberVersion = "7.20.1"
-val playwrightVersion = "1.49.0"
+val cucumberVersion = "7.21.0"
+val junitVersion = "5.11.4"${isPW?'\nval playwrightVersion = "1.50.0"':''}${c.uiTool==='selenium'?'\nval seleniumVersion = "4.28.0"':''}
 
 dependencies {
-    testImplementation("io.cucumber:cucumber-java:${'$'}{cucumberVersion}")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:${'$'}{cucumberVersion}")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
-    testImplementation("org.junit.platform:junit-platform-suite:1.11.3")
-    testImplementation("com.microsoft.playwright:playwright:${'$'}{playwrightVersion}")
-    testImplementation("com.typesafe:config:1.4.3")
-    testImplementation("org.assertj:assertj-core:3.26.3")${allureDep}
-    compileOnly("org.projectlombok:lombok:1.18.34")
-    annotationProcessor("org.projectlombok:lombok:1.18.34")${retryDep}
+    testImplementation("io.cucumber:cucumber-java:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.11.4")${isPW?'\n    testImplementation("com.microsoft.playwright:playwright:$playwrightVersion")':''}${c.uiTool==='selenium'?'\n    testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumVersion")\n    testImplementation("io.github.bonigarcia:webdrivermanager:5.9.3")':''}${c.uiTool==='restassured'?'\n    testImplementation("io.rest-assured:rest-assured:5.5.0")\n    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")':''}${c.reporting!=='none'?'\n    testImplementation("io.qameta.allure:allure-cucumber7-jvm:2.29.0")\n    testImplementation("io.qameta.allure:allure-junit5:2.29.0")':''}${c.contractTesting?'\n    testImplementation("au.com.dius.pact.consumer:junit5:4.6.17")':''}
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    testImplementation("ch.qos.logback:logback-classic:1.5.15")
 }
 
-configurations.testImplementation {
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-}
-
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
-    systemProperty("junit.platform.output.capture.stdout", "true")
-    systemProperty("junit.platform.output.capture.stderr", "true")
-    testLogging { events("passed", "skipped", "failed") }${parallelCfg}
+    systemProperty("cucumber.filter.tags", System.getProperty("cucumber.filter.tags", ""))
+    systemProperty("env", System.getProperty("env", "qa"))${c.parallelExecution?`
+    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2).coerceAtLeast(1)`:''}
+}
+\`\`\``;
+  }else{
+    content+=`\n\n### Archivo de Build: \`pom.xml\`
+
+\`\`\`xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.${c.projectName.toLowerCase().replace(/[^a-z0-9]/g,'')}</groupId>
+  <artifactId>${c.projectName.toLowerCase()}</artifactId>
+  <version>1.0.0</version>
+
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <cucumber.version>7.21.0</cucumber.version>
+    <junit.version>5.11.4</junit.version>${isPW?'\n    <playwright.version>1.50.0</playwright.version>':''}
+  </properties>
+
+  <dependencies>
+    <dependency><groupId>io.cucumber</groupId><artifactId>cucumber-java</artifactId><version>\${cucumber.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>io.cucumber</groupId><artifactId>cucumber-junit-platform-engine</artifactId><version>\${cucumber.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>\${junit.version}</version><scope>test</scope></dependency>${isPW?'\n    <dependency><groupId>com.microsoft.playwright</groupId><artifactId>playwright</artifactId><version>${playwright.version}</version><scope>test</scope></dependency>':''}
+  </dependencies>
+</project>
+\`\`\``;
+  }
+  return content;
 }
 
-tasks.register("playwrightInstall", JavaExec::class) {
-    classpath = configurations.testRuntimeClasspath.get()
-    mainClass.set("com.microsoft.playwright.CLI")
-    args = listOf("install", "--with-deps")
+function buildPythonDepsSection(c){
+  return`## 📦 Dependencias y Versiones (Python)
+
+### requirements.txt
+
+\`\`\`txt
+# BDD Framework
+${c.bddFramework==='pytest-bdd'?'pytest-bdd==7.2.0':'behave==1.2.6'}
+pytest==8.3.4
+pytest-html==4.1.1
+
+# UI / API Testing
+${c.uiTool==='playwright'?'playwright==1.50.0\npytest-playwright==0.6.0':c.uiTool==='selenium'?'selenium==4.28.0\nwebdriver-manager==4.0.2':'requests==2.32.3\nrequests-mock==1.12.1'}
+
+# Utilities
+python-dotenv==1.0.1
+pyyaml==6.0.2
+jsonschema==4.23.0
+faker==33.1.0
+
+# Reporting
+${c.reporting!=='none'?'allure-pytest==2.13.5\nallure-python-commons==2.13.5':'# (sin reporte configurado)'}
+
+# Logging
+loguru==0.7.3
+\`\`\``;
 }
-`
-  });
 
-  // gradle.properties
-  files.push({ path: 'gradle.properties', content:
-`org.gradle.jvmargs=-Xmx2048m -XX:+UseG1GC -XX:MaxMetaspaceSize=512m
-org.gradle.parallel=true
-org.gradle.caching=true
-org.gradle.daemon=true
-org.gradle.configureondemand=true
-`
-  });
+function buildOutputSection(c,isJava,isPW,isGradle,isMaven,appDisplay,buildDisplay,envList,reportDisplay,cicdDisplay){
+  const pkg=c.projectName.toLowerCase().replace(/[^a-z0-9]/g,'');
+  const basePath=isJava?`src/test`:'tests';
+  const jPkg=`src/test/java/com/${pkg}`;
 
-  // cucumber.properties
-  const glue = pkgName + '.steps,' + pkgName + '.hooks';
-  const plugins = cfg.reporting === 'allure'
-    ? 'pretty,io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm,html:build/cucumber-reports/report.html'
-    : 'pretty,html:build/cucumber-reports/report.html';
-  files.push({ path: 'src/test/resources/cucumber.properties', content:
-`cucumber.publish.quiet=true
-cucumber.plugin=${plugins}
-cucumber.glue=${glue}
+  let folderTree=isJava?`
+\`\`\`
+${c.projectName}/
+├── ${isGradle?'build.gradle.kts':'pom.xml'}
+${isGradle?'├── settings.gradle.kts\n':''}├── .gitignore
+├── README.md
+${isGradle?'├── gradle/wrapper/gradle-wrapper.properties\n':''}├── src/
+│   └── test/
+│       ├── java/com/${pkg}/
+│       │   ├── runner/
+│       │   │   └── CucumberTestRunner.java
+│       │   ├── steps/
+│       │   │   ├── Hooks.java
+│       │   │   ├── LoginSteps.java
+│       │   │   └── [ModuleNameSteps].java
+│       │   ├── pages/
+│       │   │   ├── BasePage.java
+│       │   │   ├── LoginPage.java
+│       │   │   └── [ModuleName]Page.java
+│       │   ├── context/
+│       │   │   └── ScenarioContext.java
+│       │   ├── config/
+│       │   │   └── ConfigManager.java
+│       │   └── utils/
+│       │       ├── BrowserFactory.java
+│       │       ├── TestDataLoader.java
+│       │       └── WaitHelper.java
+│       └── resources/
+│           ├── features/
+│           │   ├── login/
+│           │   │   └── login.feature
+│           │   └── [module]/
+│           │       └── [module].feature
+│           ├── test-data/
+│           │   ├── users.json
+│           │   └── [module]-data.yaml
+│           ├── schemas/
+│           │   └── api-response-schema.json
+│           ├── cucumber.properties
+│           └── application.properties${c.multiEnv?`
+│           ├── application-dev.properties
+│           ├── application-qa.properties
+│           ├── application-staging.properties
+│           └── application-prod.properties`:''}
+\`\`\``:
+`
+\`\`\`
+${c.projectName}/
+├── requirements.txt
+├── pytest.ini
+├── conftest.py
+├── .env.example
+├── .gitignore
+├── README.md
+├── tests/
+│   ├── features/
+│   │   ├── login.feature
+│   │   └── [module].feature
+│   ├── steps/
+│   │   ├── login_steps.py
+│   │   └── [module]_steps.py
+│   └── __init__.py
+├── pages/
+│   ├── base_page.py
+│   ├── login_page.py
+│   └── [module]_page.py
+├── utils/
+│   ├── browser_factory.py
+│   ├── config_manager.py
+│   └── test_data_loader.py
+└── test_data/
+    ├── users.json
+    └── [module]-data.yaml
+\`\`\``;
+
+  const cicdFile=c.cicd==='github-actions'?`.github/workflows/qa-tests.yml`:c.cicd==='jenkins'?`Jenkinsfile`:c.cicd==='gitlab-ci'?`.gitlab-ci.yml`:null;
+  if(cicdFile) folderTree=folderTree.replace('README.md','README.md\n├── '+cicdFile);
+
+  return `## 📦 Output Esperado — Estructura y Archivos
+
+### 1. Estructura de Carpetas Completa
+${folderTree}
+
+### 2. Archivos de Configuración Obligatorios
+
+${isJava?`#### \`src/test/resources/cucumber.properties\`
+\`\`\`properties
+cucumber.publish.quiet=true
+cucumber.plugin=pretty,html:target/cucumber-reports/cucumber.html,json:target/cucumber-reports/cucumber.json${c.reporting==='allure'||c.reporting==='allure-extent'?',io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm':''}
 cucumber.features=src/test/resources/features
-cucumber.filter.tags=not @wip
-`
-  });
+cucumber.glue=com.${pkg}.steps
+cucumber.filter.tags=${c.scenarioTypes.includes('smoke')?'@smoke':''}
+\`\`\`
 
-  // Config files per environment
-  envs.forEach(env => {
-    const baseUrl = env==='prod'?'https://app.example.com':env==='staging'?'https://staging.example.com':'http://localhost:8080';
-    files.push({ path: `src/test/resources/config/${env}.conf`, content:
-`app {
-  baseUrl = "${baseUrl}"
-  browser = "chromium"
-  headless = ${env !== 'dev'}
-  timeout = 30000
-  slowMo = ${env === 'dev' ? 100 : 0}
-}
-`
-    });
-  });
+#### \`src/test/resources/application.properties\`
+\`\`\`properties
+# Base URL — usar variables de entorno, NO hardcodear en producción
+app.base.url=\${APP_BASE_URL:https://qa.example.com}
+app.api.url=\${APP_API_URL:https://api-qa.example.com}
+# Browser
+browser=${isPW?'chromium':'chrome'}
+headless=\${HEADLESS:true}
+# Timeouts (ms)
+default.timeout=30000
+element.timeout=10000
+# Retry
+retry.count=${c.retryMechanism?'2':'0'}
+\`\`\``:
+`#### \`pytest.ini\`
+\`\`\`ini
+[pytest]
+testpaths = tests
+${c.bddFramework==='pytest-bdd'?'bdd_features_base_dir = tests/features':''}
+markers =
+    smoke: smoke tests
+    regression: regression tests
+    negative: negative scenarios
+addopts = -v --tb=short${c.reporting!=='none'?' --alluredir=allure-results':''}${c.parallelExecution?' -n auto':''}
+\`\`\`
 
-  // ConfigManager.java
-  files.push({ path: `src/test/java/${pkgPath}/config/ConfigManager.java`, content:
-`package ${pkgName}.config;
+#### \`.env.example\`
+\`\`\`bash
+APP_BASE_URL=https://qa.example.com
+APP_API_URL=https://api-qa.example.com
+HEADLESS=true
+ENV=qa
+\`\`\``}
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+### 3. Feature Files (.feature) — Gherkin
 
-public class ConfigManager {
+**Escribe los archivos .feature en ${c.outputLang==='es'?'ESPAÑOL':'ENGLISH'}, con escenarios claros y BDD correcto.**
 
-    private static final Config config;
+Ejemplo de estructura esperada para login:
 
-    static {
-        String env = System.getProperty("env", "dev");
-        config = ConfigFactory.load("config/" + env + ".conf")
-                              .withFallback(ConfigFactory.load());
-    }
+\`\`\`gherkin
+# language: ${c.outputLang==='es'?'es':'en'}
+@login @smoke
+Feature: ${c.outputLang==='es'?'Autenticación de usuario':'User Authentication'}
+  ${c.outputLang==='es'?'Como usuario registrado, quiero iniciar sesión en el sistema para acceder a mis funcionalidades.':'As a registered user, I want to log in to access my features.'}
+${c.featureBackground?`
+  Background:
+    ${c.outputLang==='es'?'Dado que el usuario está en la página de inicio de sesión':'Given the user is on the login page'}`:``}
 
-    private ConfigManager() {}
+  @happy-path
+  Scenario: ${c.outputLang==='es'?'Login exitoso con credenciales válidas':'Successful login with valid credentials'}
+    ${c.outputLang==='es'?'Dado que el usuario ingresa credenciales válidas\n    Cuando presiona el botón de ingresar\n    Entonces debe visualizar el dashboard principal':'Given the user enters valid credentials\n    When they press the login button\n    Then they should see the main dashboard'}
 
-    public static String getBaseUrl()  { return config.getString("app.baseUrl"); }
-    public static String getBrowser()  { return config.hasPath("app.browser") ? config.getString("app.browser") : "chromium"; }
-    public static boolean isHeadless() { return config.hasPath("app.headless") && config.getBoolean("app.headless"); }
-    public static int getTimeout()     { return config.hasPath("app.timeout")  ? config.getInt("app.timeout")  : 30000; }
-    public static int getSlowMo()      { return config.hasPath("app.slowMo")   ? config.getInt("app.slowMo")   : 0; }
-}
-`
-  });
-
-  // ScenarioContext.java
-  files.push({ path: `src/test/java/${pkgPath}/context/ScenarioContext.java`, content:
-`package ${pkgName}.context;
-
-import com.microsoft.playwright.Page;
-import java.util.HashMap;
-import java.util.Map;
-
-public class ScenarioContext {
-
-    private static final ThreadLocal<Page> PAGE = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String,Object>> DATA = new ThreadLocal<>();
-
-    private ScenarioContext() {}
-
-    public static Page getPage()             { return PAGE.get(); }
-    public static void setPage(Page page)    { PAGE.set(page); }
-
-    public static void setData(String key, Object val) {
-        if (DATA.get() == null) DATA.set(new HashMap<>());
-        DATA.get().put(key, val);
-    }
-    @SuppressWarnings("unchecked")
-    public static <T> T getData(String key) {
-        Map<String,Object> d = DATA.get();
-        return d != null ? (T) d.get(key) : null;
-    }
-    public static void clear() { PAGE.remove(); DATA.remove(); }
-}
-`
-  });
-
-  // Hooks.java
-  files.push({ path: `src/test/java/${pkgPath}/hooks/Hooks.java`, content:
-`package ${pkgName}.hooks;
-
-import com.microsoft.playwright.*;
-import ${pkgName}.config.ConfigManager;
-import ${pkgName}.context.ScenarioContext;
-import io.cucumber.java.After;
-import io.cucumber.java.AfterAll;
-import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
-import io.cucumber.java.Scenario;
-
-public class Hooks {
-
-    private static Playwright playwright;
-    private static Browser browser;
-
-    @BeforeAll
-    public static void globalSetUp() {
-        playwright = Playwright.create();
-        BrowserType.LaunchOptions opts = new BrowserType.LaunchOptions()
-            .setHeadless(ConfigManager.isHeadless())
-            .setSlowMo(ConfigManager.getSlowMo());
-        browser = switch (ConfigManager.getBrowser().toLowerCase()) {
-            case "firefox" -> playwright.firefox().launch(opts);
-            case "webkit"  -> playwright.webkit().launch(opts);
-            default        -> playwright.chromium().launch(opts);
-        };
-    }
-
-    @Before
-    public void setUp(Scenario scenario) {
-        BrowserContext ctx = browser.newContext(new Browser.NewContextOptions()
-            .setBaseURL(ConfigManager.getBaseUrl())
-            .setViewportSize(1280, 720));
-        ctx.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true));
-        Page page = ctx.newPage();
-        page.setDefaultTimeout(ConfigManager.getTimeout());
-        ScenarioContext.setPage(page);
-    }
-
-    @After
-    public void tearDown(Scenario scenario) {
-        Page page = ScenarioContext.getPage();
-        if (page != null) {
-            if (scenario.isFailed()) {
-                byte[] shot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-                scenario.attach(shot, "image/png", "failure-screenshot");
-            }
-            page.context().tracing().stop();
-            page.context().close();
-        }
-        ScenarioContext.clear();
-    }
-
-    @AfterAll
-    public static void globalTearDown() {
-        if (browser != null) browser.close();
-        if (playwright != null) playwright.close();
-    }
-}
-`
-  });
-
-  // BasePage.java
-  files.push({ path: `src/test/java/${pkgPath}/pages/BasePage.java`, content:
-`package ${pkgName}.pages;
-
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.WaitForSelectorState;
-import ${pkgName}.context.ScenarioContext;
-
-public abstract class BasePage {
-
-    protected final Page page;
-
-    protected BasePage() { this.page = ScenarioContext.getPage(); }
-
-    protected void click(String sel)             { page.locator(sel).click(); }
-    protected void fill(String sel, String val)  { page.locator(sel).clear(); page.locator(sel).fill(val); }
-    protected String getText(String sel)         { return page.locator(sel).textContent(); }
-    protected String getValue(String sel)        { return page.locator(sel).inputValue(); }
-    protected boolean isVisible(String sel)      { return page.locator(sel).isVisible(); }
-    protected boolean isEnabled(String sel)      { return page.locator(sel).isEnabled(); }
-
-    protected void waitForVisible(String sel) {
-        page.locator(sel).waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
-    }
-    protected void waitForHidden(String sel) {
-        page.locator(sel).waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
-    }
-    protected void selectOption(String sel, String val) { page.locator(sel).selectOption(val); }
-    public void navigateTo(String path)          { page.navigate(path); }
-    public String getCurrentUrl()                { return page.url(); }
-    public String getTitle()                     { return page.title(); }
-}
-`
-  });
-
-  // LoginPage.java
-  files.push({ path: `src/test/java/${pkgPath}/pages/LoginPage.java`, content:
-`package ${pkgName}.pages;
-
-public class LoginPage extends BasePage {
-
-    private static final String USERNAME_INPUT  = "[data-testid='username']";
-    private static final String PASSWORD_INPUT  = "[data-testid='password']";
-    private static final String LOGIN_BUTTON    = "[data-testid='login-btn']";
-    private static final String ERROR_MESSAGE   = "[data-testid='error-msg']";
-    private static final String DASHBOARD_TITLE = "[data-testid='dashboard-title']";
-
-    public void navigateToLoginPage()               { navigateTo("/login"); waitForVisible(LOGIN_BUTTON); }
-    public void enterUsername(String u)              { fill(USERNAME_INPUT, u); }
-    public void enterPassword(String p)              { fill(PASSWORD_INPUT, p); }
-    public void clickLoginButton()                   { click(LOGIN_BUTTON); }
-    public void login(String u, String p)            { enterUsername(u); enterPassword(p); clickLoginButton(); }
-    public boolean isLoginErrorVisible()             { return isVisible(ERROR_MESSAGE); }
-    public String  getErrorMessage()                 { waitForVisible(ERROR_MESSAGE); return getText(ERROR_MESSAGE); }
-    public boolean isLoginButtonEnabled()            { return isEnabled(LOGIN_BUTTON); }
-
-    public boolean isDashboardVisible() {
-        try { waitForVisible(DASHBOARD_TITLE); return true; } catch (Exception e) { return false; }
-    }
-}
-`
-  });
-
-  // login.feature
-  const bg = cfg.featureBackground ? '\n  Background:\n    Given I am on the login page\n' : '';
-  const given = cfg.featureBackground ? '' : '\n    Given I am on the login page\n';
-  let feat = `Feature: User Login
-  As a registered user
-  I want to log in to the application
-  So that I can access protected resources
-${bg}`;
-  if (cfg.scenarioTypes.includes('positive') || cfg.scenarioTypes.includes('smoke')) {
-    feat += `
-  @smoke @positive
-  Scenario: Successful login with valid credentials${given}
-    When I enter username "admin@example.com"
-    And I enter password "SecurePass123"
-    And I click the login button
-    Then I should be redirected to the dashboard
-    And the page title should contain "Dashboard"
-`;
-  }
-  if (cfg.scenarioTypes.includes('negative')) {
-    feat += `
   @negative
-  Scenario: Failed login with invalid credentials${given}
-    When I enter username "invalid@example.com"
-    And I enter password "wrongpassword"
-    And I click the login button
-    Then I should see an error message "Invalid credentials"
-    And I should remain on the login page
-`;
-  }
-  if (cfg.scenarioTypes.includes('boundary')) {
-    feat += `
-  @boundary
-  Scenario: Login attempt with empty credentials${given}
-    When I enter username ""
-    And I enter password ""
-    And I click the login button
-    Then I should see an error message "Please enter your credentials"
-`;
-  }
-  if (cfg.dataDriven) {
-    feat += `
-  @regression @data-driven
-  Scenario Outline: Login with multiple credential sets${given}
-    When I enter username "<username>"
-    And I enter password "<password>"
-    And I click the login button
-    Then I should see the result "<result>"
+  Scenario: ${c.outputLang==='es'?'Login fallido con contraseña incorrecta':'Failed login with wrong password'}
+    ${c.outputLang==='es'?'Dado que el usuario ingresa una contraseña incorrecta\n    Cuando presiona el botón de ingresar\n    Entonces debe ver el mensaje "Credenciales inválidas"':'Given the user enters an incorrect password\n    When they press the login button\n    Then they should see "Invalid credentials" message'}
+${c.dataDriven?`
+  @data-driven
+  Scenario Outline: ${c.outputLang==='es'?'Login con múltiples credenciales inválidas':'Login with multiple invalid credentials'}
+    ${c.outputLang==='es'?'Dado que el usuario ingresa "<usuario>" y "<contraseña>"\n    Cuando presiona el botón de ingresar\n    Entonces debe ver el mensaje "<mensaje_error>"':'Given the user enters "<username>" and "<password>"\n    When they press the login button\n    Then they should see "<error_message>"'}
 
     Examples:
-      | username                | password       | result    |
-      | admin@example.com       | SecurePass123  | dashboard |
-      | invalid@example.com     | wrongpass      | error     |
-      | user@example.com        | UserPass456    | dashboard |
-`;
-  }
-  files.push({ path: 'src/test/resources/features/login.feature', content: feat });
+      | ${c.outputLang==='es'?'usuario':'username'} | ${c.outputLang==='es'?'contraseña':'password'} | ${c.outputLang==='es'?'mensaje_error':'error_message'} |
+      | valid@email.com | wrongPass | ${c.outputLang==='es'?'Contraseña incorrecta':'Wrong password'} |
+      | notexist@email.com | anyPass   | ${c.outputLang==='es'?'Usuario no encontrado':'User not found'} |
+      | (vacío)         | anyPass   | ${c.outputLang==='es'?'Email requerido':'Email required'} |`:''}
+\`\`\`
 
-  // LoginSteps.java
-  files.push({ path: `src/test/java/${pkgPath}/steps/LoginSteps.java`, content:
-`package ${pkgName}.steps;
+**Genera todos los features correspondientes a los requisitos funcionales listados.** Máximo **${c.maxScenarios} escenarios por feature**.
 
-import ${pkgName}.pages.LoginPage;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import org.assertj.core.api.Assertions;
+### 4. Step Definitions
 
-public class LoginSteps {
+- Step definitions **limpios**, sin lógica de UI directamente (delegar a Page Objects).
+- Usar **inyección de dependencias** con PicoContainer (Java) o fixtures (Python).
+- Nombrar métodos descriptivamente: \`userEntersValidCredentials()\`, \`userSeesMainDashboard()\`.
 
-    private final LoginPage loginPage = new LoginPage();
+### 5. Patrón de Diseño: Page Object Model
 
-    @Given("I am on the login page")
-    public void iAmOnTheLoginPage() { loginPage.navigateToLoginPage(); }
+- **BasePage**: Métodos reutilizables de interacción (click, fill, waitForElement, etc.).
+- **Páginas específicas**: Heredan de BasePage. Encapsulan selectores y acciones del módulo.
+- **Selectores**: Preferir \`data-testid\`, \`aria-label\`, o \`role\` sobre XPath frágiles.${isPW?'\n- Usar **auto-waiting nativo de Playwright** en vez de sleeps explícitos.':''}
 
-    @When("I enter username {string}")
-    public void iEnterUsername(String username) { loginPage.enterUsername(username); }
+### 6. Hooks
 
-    @And("I enter password {string}")
-    public void iEnterPassword(String password) { loginPage.enterPassword(password); }
-
-    @And("I click the login button")
-    public void iClickTheLoginButton() { loginPage.clickLoginButton(); }
-
-    @Then("I should be redirected to the dashboard")
-    public void iShouldBeRedirectedToTheDashboard() {
-        Assertions.assertThat(loginPage.isDashboardVisible())
-            .as("Dashboard should be visible after successful login").isTrue();
-    }
-
-    @Then("I should see an error message {string}")
-    public void iShouldSeeAnErrorMessage(String expected) {
-        Assertions.assertThat(loginPage.isLoginErrorVisible()).as("Error message should be displayed").isTrue();
-        Assertions.assertThat(loginPage.getErrorMessage()).as("Error message text").contains(expected);
-    }
-
-    @And("I should remain on the login page")
-    public void iShouldRemainOnTheLoginPage() {
-        Assertions.assertThat(loginPage.isLoginButtonEnabled()).as("Login button should still be present").isTrue();
-    }
-
-    @And("the page title should contain {string}")
-    public void thePageTitleShouldContain(String t) {
-        Assertions.assertThat(loginPage.getTitle()).as("Page title").contains(t);
-    }
-
-    @Then("I should see the result {string}")
-    public void iShouldSeeTheResult(String result) {
-        if ("dashboard".equals(result)) Assertions.assertThat(loginPage.isDashboardVisible()).isTrue();
-        else Assertions.assertThat(loginPage.isLoginErrorVisible()).isTrue();
-    }
+\`\`\`${isJava?'java':'python'}
+${isJava?`// Hooks.java
+@Before
+public void setUp(Scenario scenario) {
+    // inicializar browser, contexto, drivers
+    // leer configuración de entorno
 }
-`
-  });
+@After
+public void tearDown(Scenario scenario) {
+    // capturar screenshot si falla
+    // cerrar browser/contexto
+    // limpiar datos de prueba
+}
+@BeforeAll
+public static void globalSetUp() {
+    // configuración global única por suite
+}`:
+`# conftest.py
+@pytest.fixture(scope="session")
+def browser_context():
+    # inicializar playwright / selenium
+    yield context
+    # cleanup
 
-  // TestRunner.java
-  files.push({ path: `src/test/java/${pkgPath}/runners/TestRunner.java`, content:
-`package ${pkgName}.runners;
-
-import org.junit.platform.suite.api.ConfigurationParameter;
-import org.junit.platform.suite.api.IncludeEngines;
-import org.junit.platform.suite.api.Suite;
-import static io.cucumber.junit.platform.engine.Constants.*;
-
-@Suite
-@IncludeEngines("cucumber")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME,
-    value = "pretty,html:build/cucumber-reports/report.html,io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME,
-    value = "${pkgName}.steps,${pkgName}.hooks")
-@ConfigurationParameter(key = FEATURES_PROPERTY_NAME,
-    value = "src/test/resources/features")
-@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @wip")
-public class TestRunner {}
-`
-  });
-
-  // .gitignore
-  files.push({ path: '.gitignore', content:
-`.gradle/
-build/
-.idea/
-*.iml
-out/
-allure-results/
-allure-report/
-.DS_Store
-*.class
-`
-  });
-
-  // README.md
-  files.push({ path: 'README.md', content:
-`# ${title}
-
-${cfg.projectDescription || 'Proyecto de automatizacion QA.'}
-
-## Stack Tecnologico
-
-| Componente    | Herramienta               |
-|---------------|---------------------------|
-| Lenguaje      | Java 21                   |
-| BDD Framework | Cucumber 7.20.1           |
-| Test Runner   | JUnit Platform 5.11.3     |
-| UI Automation | Playwright 1.49.0         |
-| Build Tool    | Gradle (Kotlin DSL)       |
-| Reporting     | ${cfg.reporting === 'allure' ? 'Allure 2.29.0' : 'HTML Report'} |
-
-## Primeros Pasos
-
-### Instalar navegadores Playwright
-\`\`\`bash
-./gradlew playwrightInstall
+@pytest.fixture(autouse=True)
+def capture_screenshot_on_failure(request, page):
+    yield
+    if request.node.rep_call.failed:
+        page.screenshot(path=f"screenshots/{request.node.name}.png")`}
 \`\`\`
 
-### Ejecutar todos los tests
-\`\`\`bash
-./gradlew test
-\`\`\`
+### 7. Test Data Management
 
-### Ejecutar por ambiente
-\`\`\`bash
-./gradlew test -Denv=staging
-./gradlew test -Denv=prod
-\`\`\`
+- Archivos JSON/YAML en \`${basePath}/resources/test-data/\` (Java) o \`test_data/\` (Python).
+- **Nunca hardcodear** credenciales o datos sensibles en el código.
+- Usar variables de entorno para datos secretos: \`System.getenv("DB_PASSWORD")\` o \`os.getenv("DB_PASSWORD")\`.
+- Implementar clase \`TestDataLoader\` para cargar datos dinámicamente.
 
-### Ejecutar por tags
-\`\`\`bash
-./gradlew test -Dcucumber.filter.tags="@smoke"
-./gradlew test -Dcucumber.filter.tags="@regression and not @wip"
-\`\`\`
+### 8. Reporting: ${reportDisplay}
 
-### Ver reporte Allure
-\`\`\`bash
-./gradlew allureServe
-\`\`\`
-`
-  });
+${c.reporting!=='none'?`- Configurar reporte ${reportDisplay} con historial de ejecución.
+- Adjuntar screenshots automáticamente a cada escenario fallido.
+- Adjuntar logs y response bodies de APIs en caso de falla.
+- Configurar reporte de cobertura por módulo/tag.`:
+'- Implementar al menos logs básicos con timestamps para debugging.'}
 
-  // CI/CD
-  if (cfg.cicd === 'github-actions') {
-    files.push({ path: '.github/workflows/ci.yml', content:
-`name: QA Automation Tests
+### 9. CI/CD: ${cicdDisplay}
+
+${c.cicd!=='none'?`\`\`\`yaml
+# ${cicdFile}
+${c.cicd==='github-actions'?`name: QA Automation Tests
+
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * *'  # Nightly regression
+
 jobs:
-  test:
+  qa-tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [${envList.map(e=>`'${e}'`).join(', ')}]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: gradle
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Install Playwright browsers
-        run: ./gradlew playwrightInstall
-      - name: Run QA tests
-        run: ./gradlew test -Denv=staging
+      - name: Setup ${isJava?'Java 21':'Python 3.12'}
+        uses: ${isJava?'actions/setup-java@v4\n        with:\n          distribution: temurin\n          java-version: "21"':'actions/setup-python@v5\n        with:\n          python-version: "3.12"'}
+      - name: Install dependencies
+        run: ${isJava?isGradle?'./gradlew dependencies':'mvn dependency:resolve':'pip install -r requirements.txt'}${isPW?`\n      - name: Install Playwright browsers\n        run: ${isJava?'./gradlew playwright:install':'playwright install'}`:``}
+      - name: Run Smoke Tests
+        run: ${isJava?isGradle?'./gradlew test -Dcucumber.filter.tags="@smoke" -Denv=${{ matrix.environment }}':'mvn test -Dcucumber.filter.tags="@smoke" -Denv=${{ matrix.environment }}':'pytest -m smoke --env=${{ matrix.environment }}'}
         env:
-          CI: true
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
+          APP_BASE_URL: \${{ secrets.APP_BASE_URL }}
+          HEADLESS: "true"
+      - name: Upload Test Reports
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: |
-            build/reports/tests/
-            build/cucumber-reports/
-            build/allure-results/
-          retention-days: 7
-`
-    });
+          name: test-reports-\${{ matrix.environment }}
+          path: ${isJava?'target/':''}allure-results/`:
+c.cicd==='jenkins'?`pipeline {
+  agent any
+  stages {
+    stage('Install') { steps { sh '${isJava?isGradle?'./gradlew dependencies':'mvn dependency:resolve':'pip install -r requirements.txt'}' } }
+    stage('Smoke Tests') { steps { sh '${isJava?isGradle?'./gradlew test -Dcucumber.filter.tags="@smoke"':'mvn test -Dcucumber.filter.tags="@smoke"':'pytest -m smoke'}' } }
+    stage('Full Tests') { steps { sh '${isJava?isGradle?'./gradlew test':'mvn test':'pytest'}' } }
   }
-  if (cfg.cicd === 'jenkins') {
-    files.push({ path: 'Jenkinsfile', content:
-`pipeline {
-    agent any
-    tools { jdk 'JDK21' }
-    parameters {
-        choice(name: 'ENV', choices: ['dev','staging','prod'], description: 'Target environment')
-        string(name: 'TAGS', defaultValue: '@smoke', description: 'Cucumber tags')
-    }
-    stages {
-        stage('Checkout') { steps { checkout scm } }
-        stage('Install Browsers') { steps { sh './gradlew playwrightInstall' } }
-        stage('Run Tests') {
-            steps { sh "./gradlew test -Denv=\${params.ENV} -Dcucumber.filter.tags='\${params.TAGS}'" }
-            post { always { junit 'build/test-results/**/*.xml' } }
-        }
-    }
-    post { always { cleanWs() } }
-}
-`
-    });
-  }
-  return files;
-}
-
-// ═══ PYTHON FILE GENERATION ═══════════
-function generatePythonFiles(cfg) {
-  const mod = toPyModule(cfg.projectName) || 'myproject';
-  const title = toTitle(cfg.projectName);
-  const files = [];
-  const envs = cfg.multiEnv ? cfg.environments.split(',').map(e=>e.trim()) : ['dev','staging'];
-
-  // requirements.txt
-  let reqs = 'pytest==8.3.4\npytest-bdd==7.3.0\nplaywright==1.49.0\npytest-playwright==0.5.2\npython-dotenv==1.0.1\nrequests==2.32.3\n';
-  if (cfg.reporting === 'allure')    reqs += 'allure-pytest==2.13.5\n';
-  if (cfg.parallelExecution)         reqs += 'pytest-xdist==3.6.1\n';
-  if (cfg.retryMechanism)            reqs += 'pytest-rerunfailures==14.0\n';
-  if (cfg.schemaValidation)          reqs += 'jsonschema==4.23.0\n';
-  files.push({ path: 'requirements.txt', content: reqs });
-
-  // pytest.ini
-  let addopts = '-v';
-  if (cfg.reporting === 'allure')  addopts += ' --alluredir=allure-results';
-  if (cfg.parallelExecution)        addopts += ' -n auto';
-  if (cfg.retryMechanism)           addopts += ' --reruns 2 --reruns-delay 1';
-  files.push({ path: 'pytest.ini', content:
-`[pytest]
-addopts = ${addopts}
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
-bdd_features_base_dir = features
-filterwarnings =
-    ignore::DeprecationWarning
-log_cli = true
-log_cli_level = INFO
-`
-  });
-
-  // conftest.py
-  files.push({ path: 'conftest.py', content:
-`import os
-import pytest
-from dotenv import load_dotenv
-
-load_dotenv(".env.dev")
-
-
-def pytest_configure(config):
-    config.addinivalue_line("markers", "smoke: smoke test suite")
-    config.addinivalue_line("markers", "regression: regression test suite")
-    config.addinivalue_line("markers", "positive: positive test scenarios")
-    config.addinivalue_line("markers", "negative: negative test scenarios")
-    config.addinivalue_line("markers", "boundary: boundary value tests")
-
-
-@pytest.fixture(scope="session")
-def browser_context_args(browser_context_args):
-    return {
-        **browser_context_args,
-        "base_url": os.getenv("BASE_URL", "http://localhost:8080"),
-        "viewport": {"width": 1280, "height": 720},
-    }
-
-
-@pytest.fixture(scope="session")
-def browser_type_launch_args(browser_type_launch_args):
-    return {
-        **browser_type_launch_args,
-        "headless": os.getenv("HEADLESS", "true").lower() == "true",
-        "slow_mo": int(os.getenv("SLOW_MO", "0")),
-    }
-
-
-@pytest.fixture
-def page(browser):
-    ctx = browser.new_context()
-    ctx.tracing.start(screenshots=True, snapshots=True)
-    pg = ctx.new_page()
-    pg.set_default_timeout(int(os.getenv("TIMEOUT", "30000")))
-    yield pg
-    ctx.tracing.stop()
-    pg.close()
-    ctx.close()
-
-
-@pytest.fixture
-def login_page(page):
-    from pages.login_page import LoginPage
-    return LoginPage(page)
-`
-  });
-
-  // .env files
-  envs.forEach(env => {
-    const url = env==='prod'?'https://app.example.com':env==='staging'?'https://staging.example.com':'http://localhost:8080';
-    files.push({ path: `.env.${env}`, content:
-`BASE_URL=${url}
-HEADLESS=true
-SLOW_MO=0
-TIMEOUT=30000
-BROWSER=chromium
-RECORD_VIDEO=false
-`
-    });
-  });
-
-  // pages/__init__.py
-  files.push({ path: 'pages/__init__.py', content: '' });
-
-  // pages/base_page.py  (docstrings use single quotes to avoid JS template conflicts)
-  files.push({ path: 'pages/base_page.py', content:
-`from playwright.sync_api import Page, Locator
-
-
-class BasePage:
-    # Base class for all page objects
-
-    def __init__(self, page: Page) -> None:
-        self.page = page
-
-    def navigate(self, path: str) -> None:
-        self.page.goto(path)
-
-    def click(self, selector: str) -> None:
-        self.page.locator(selector).click()
-
-    def fill(self, selector: str, value: str) -> None:
-        locator = self.page.locator(selector)
-        locator.clear()
-        locator.fill(value)
-
-    def get_text(self, selector: str) -> str:
-        return self.page.locator(selector).text_content() or ""
-
-    def get_value(self, selector: str) -> str:
-        return self.page.locator(selector).input_value()
-
-    def is_visible(self, selector: str) -> bool:
-        return self.page.locator(selector).is_visible()
-
-    def is_enabled(self, selector: str) -> bool:
-        return self.page.locator(selector).is_enabled()
-
-    def wait_for_visible(self, selector: str, timeout: int = 10000) -> None:
-        self.page.locator(selector).wait_for(state="visible", timeout=timeout)
-
-    def wait_for_hidden(self, selector: str, timeout: int = 10000) -> None:
-        self.page.locator(selector).wait_for(state="hidden", timeout=timeout)
-
-    def select_option(self, selector: str, value: str) -> None:
-        self.page.locator(selector).select_option(value)
-
-    def get_current_url(self) -> str:
-        return self.page.url
-
-    def get_title(self) -> str:
-        return self.page.title()
-
-    def take_screenshot(self, path: str = "screenshot.png") -> None:
-        self.page.screenshot(path=path, full_page=True)
-`
-  });
-
-  // pages/login_page.py
-  files.push({ path: 'pages/login_page.py', content:
-`from playwright.sync_api import Page
-from pages.base_page import BasePage
-
-
-class LoginPage(BasePage):
-    # Page Object for the Login page
-
-    USERNAME_INPUT  = "[data-testid='username']"
-    PASSWORD_INPUT  = "[data-testid='password']"
-    LOGIN_BUTTON    = "[data-testid='login-btn']"
-    ERROR_MESSAGE   = "[data-testid='error-msg']"
-    DASHBOARD_TITLE = "[data-testid='dashboard-title']"
-
-    def __init__(self, page: Page) -> None:
-        super().__init__(page)
-
-    def navigate_to_login(self) -> None:
-        self.navigate("/login")
-        self.wait_for_visible(self.LOGIN_BUTTON)
-
-    def enter_username(self, username: str) -> None:
-        self.fill(self.USERNAME_INPUT, username)
-
-    def enter_password(self, password: str) -> None:
-        self.fill(self.PASSWORD_INPUT, password)
-
-    def click_login(self) -> None:
-        self.click(self.LOGIN_BUTTON)
-
-    def login(self, username: str, password: str) -> None:
-        self.enter_username(username)
-        self.enter_password(password)
-        self.click_login()
-
-    def is_error_visible(self) -> bool:
-        return self.is_visible(self.ERROR_MESSAGE)
-
-    def get_error_message(self) -> str:
-        self.wait_for_visible(self.ERROR_MESSAGE)
-        return self.get_text(self.ERROR_MESSAGE)
-
-    def is_dashboard_visible(self) -> bool:
-        try:
-            self.wait_for_visible(self.DASHBOARD_TITLE, timeout=5000)
-            return True
-        except Exception:
-            return False
-
-    def is_login_button_enabled(self) -> bool:
-        return self.is_enabled(self.LOGIN_BUTTON)
-`
-  });
-
-  // features/login.feature
-  const bg2 = cfg.featureBackground ? '\n  Background:\n    Given I am on the login page\n' : '';
-  const given2 = cfg.featureBackground ? '' : '\n    Given I am on the login page\n';
-  let feat2 = `Feature: User Login
-  As a registered user
-  I want to log in to the application
-  So that I can access protected resources
-${bg2}`;
-  if (cfg.scenarioTypes.includes('positive') || cfg.scenarioTypes.includes('smoke')) {
-    feat2 += `
-  @smoke @positive
-  Scenario: Successful login with valid credentials${given2}
-    When I enter username "admin@example.com"
-    And I enter password "SecurePass123"
-    And I click the login button
-    Then I should be redirected to the dashboard
-`;
-  }
-  if (cfg.scenarioTypes.includes('negative')) {
-    feat2 += `
-  @negative
-  Scenario: Failed login with invalid credentials${given2}
-    When I enter username "invalid@example.com"
-    And I enter password "wrongpassword"
-    And I click the login button
-    Then I should see an error message "Invalid credentials"
-
-  @negative
-  Scenario: Login attempt with empty credentials${given2}
-    When I enter username ""
-    And I enter password ""
-    And I click the login button
-    Then I should see an error message "Please enter your credentials"
-`;
-  }
-  if (cfg.dataDriven) {
-    feat2 += `
-  @regression @data-driven
-  Scenario Outline: Login with multiple credential sets${given2}
-    When I enter username "<username>"
-    And I enter password "<password>"
-    And I click the login button
-    Then I should see the result "<result>"
-
-    Examples:
-      | username               | password       | result    |
-      | admin@example.com      | SecurePass123  | dashboard |
-      | invalid@example.com    | wrongpass      | error     |
-`;
-  }
-  files.push({ path: 'features/__init__.py', content: '' });
-  files.push({ path: 'features/login.feature', content: feat2 });
-
-  // tests/__init__.py + test_login.py
-  files.push({ path: 'tests/__init__.py', content: '' });
-  files.push({ path: 'tests/test_login.py', content:
-`import pytest
-from pytest_bdd import scenarios, given, when, then, parsers
-
-scenarios("../features/login.feature")
-
-
-@given("I am on the login page")
-def navigate_to_login(login_page):
-    login_page.navigate_to_login()
-
-
-@when(parsers.parse('I enter username "{username}"'))
-def enter_username(login_page, username):
-    login_page.enter_username(username)
-
-
-@when(parsers.parse('I enter password "{password}"'))
-def enter_password(login_page, password):
-    login_page.enter_password(password)
-
-
-@when("I click the login button")
-def click_login_button(login_page):
-    login_page.click_login()
-
-
-@then("I should be redirected to the dashboard")
-def verify_dashboard_visible(login_page):
-    assert login_page.is_dashboard_visible(), "Expected dashboard to be visible"
-
-
-@then(parsers.parse('I should see an error message "{expected}"'))
-def verify_error_message(login_page, expected):
-    assert login_page.is_error_visible(), "Expected error message to be visible"
-    actual = login_page.get_error_message()
-    assert expected in actual, f"Expected '{expected}' in '{actual}'"
-
-
-@then(parsers.parse('I should see the result "{result}"'))
-def verify_result(login_page, result):
-    if result == "dashboard":
-        assert login_page.is_dashboard_visible(), "Expected dashboard"
-    else:
-        assert login_page.is_error_visible(), "Expected error message"
-`
-  });
-
-  // .gitignore
-  files.push({ path: '.gitignore', content:
-`__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-.env
+  post { always { publishHTML([reportDir: '${isJava?'target/cucumber-reports':'allure-report'}', reportFiles: '*.html']) } }
+}`:
+`stages:
+  - test
+smoke-tests:
+  stage: test
+  script:
+    - ${isJava?isGradle?'./gradlew test -Dcucumber.filter.tags="@smoke"':'mvn test -Dcucumber.filter.tags="@smoke"':'pytest -m smoke'}
+  artifacts:
+    paths: [allure-results/]`}
+\`\`\``:
+'- Sin pipeline CI/CD configurado. Considera agregar GitHub Actions para automatizar la ejecución.'}
+
+### 10. README.md Profesional
+
+El README debe incluir:
+- **Descripción del proyecto** y arquitectura.
+- **Requisitos previos** (versiones exactas de SDK, herramientas).
+- **Instalación paso a paso** con comandos exactos.
+- **Cómo ejecutar** tests por tag, módulo, ambiente.
+- **Variables de entorno** necesarias (tabla).
+- **Comandos** para Smoke / Regression / tags específicos.
+- **Estructura de carpetas** explicada.
+- **Cómo agregar** nuevos features y steps.
+- **Troubleshooting** común.
+
+### 11. .gitignore Completo
+
+\`\`\`gitignore
+${isJava?`# Build
+build/
+target/
+*.class
+*.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+
+# Test Reports
 allure-results/
 allure-report/
-videos/
+test-reports/
 screenshots/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example`:
+`# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
 .venv/
 venv/
-.DS_Store
-`
-  });
+dist/
+build/
 
-  // README.md
-  files.push({ path: 'README.md', content:
-`# ${title}
+# Test
+allure-results/
+allure-report/
+.pytest_cache/
+screenshots/
+*.log
 
-${cfg.projectDescription || 'Proyecto de automatizacion QA.'}
+# IDE
+.vscode/
+.idea/
 
-## Stack Tecnologico
+# Environment
+.env
+.env.*
+!.env.example
 
-| Componente    | Herramienta              |
-|---------------|--------------------------|
-| Lenguaje      | Python 3.12+             |
-| BDD Framework | pytest-bdd 7.3.0         |
-| Test Runner   | pytest 8.3.4             |
-| UI Automation | Playwright 1.49.0        |
-| Reporting     | ${cfg.reporting === 'allure' ? 'Allure 2.13.5' : 'pytest terminal'} |
-
-## Configuracion
-
-\`\`\`bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-playwright install --with-deps
-\`\`\`
-
-## Ejecucion
-
-\`\`\`bash
-pytest                        # todos los tests
-pytest -m smoke               # solo smoke
-pytest -m "regression and not wip"
-cp .env.staging .env && pytest  # otro ambiente
-\`\`\`
-`
-  });
-
-  // CI/CD
-  if (cfg.cicd === 'github-actions') {
-    files.push({ path: '.github/workflows/ci.yml', content:
-`name: QA Automation Tests
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Install Playwright browsers
-        run: playwright install --with-deps chromium
-      - name: Run tests
-        run: pytest --tb=short
-        env:
-          BASE_URL: https://staging.example.com
-          HEADLESS: true
-          CI: true
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: allure-results/
-          retention-days: 7
-`
-    });
-  }
-  if (cfg.cicd === 'gitlab-ci') {
-    files.push({ path: '.gitlab-ci.yml', content:
-`image: python:3.12-slim
-stages: [test]
-variables:
-  BASE_URL: "https://staging.example.com"
-  HEADLESS: "true"
-before_script:
-  - pip install -r requirements.txt
-  - playwright install --with-deps chromium
-run_tests:
-  stage: test
-  script: pytest --tb=short -v
-  artifacts:
-    when: always
-    paths: [allure-results/]
-    expire_in: 7 days
-`
-    });
-  }
-  return files;
+# OS
+.DS_Store`}
+\`\`\``;
 }
 
-// ═══ ZIP GENERATION (Pure JS) ═════════
-function crc32(bytes) {
-  if (!crc32._t) {
-    crc32._t = new Uint32Array(256);
-    for (let i = 0; i < 256; i++) {
-      let c = i;
-      for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-      crc32._t[i] = c;
+function buildBestPracticesSection(c,isJava,isPW){
+  let items=[
+    '✅ **Código limpio y SOLID**: Single Responsibility en Page Objects y Steps. Métodos pequeños, descriptivos y reutilizables.',
+    `✅ **Waits inteligentes**: ${isPW?'Usar **auto-waiting nativo de Playwright**. Prohibido `page.waitForTimeout()` para lógica de negocio. Usar `page.waitForSelector()`, `expect(locator).toBeVisible()`.':'Usar **Explicit Waits** de WebDriver (`WebDriverWait + ExpectedConditions`). Prohibido `Thread.sleep()` en producción.'}`,
+    '✅ **Código sin hardcoding**: Variables de entorno para URLs, credenciales y configuración sensible.',
+    '✅ **Selectores robustos**: Preferir `data-testid`, `aria-label`, `role` y texto visible. XPath solo como último recurso.',
+    c.parallelExecution?'✅ **Ejecución paralela**: Configurar thread-safety en Page Objects y contextos de browser independientes por thread.':'⚠️ **Ejecución paralela**: No configurada. Considerar habilitar para reducir tiempo de ejecución.',
+    c.retryMechanism?'✅ **Retry mechanism**: Implementar retry automático (máx. 2 reintentos) para escenarios flaky. Loguear cada reintento.':'',
+    c.headlessMode?'✅ **Headless + Headed**: Configurar via variable de entorno `HEADLESS=true/false`. CI/CD usa headless por defecto.':'',
+    c.multiEnv?`✅ **Multi-ambiente**: Soporte para ambientes [${c.environments}] mediante archivos de configuración por ambiente y variable de entorno \`ENV\`.`:'',
+    '✅ **Logging centralizado**: Logger configurado con nivel INFO en producción, DEBUG en desarrollo. Incluir timestamps y nombre de clase.',
+    c.testDataMgmt?'✅ **Test data management**: Datos de prueba en archivos JSON/YAML. Usar `Faker` para datos dinámicos. Limpiar datos post-test.':'',
+    '✅ **Screenshots automáticos**: Captura de screenshot en cada escenario fallido, adjunto al reporte.',
+    '✅ **Tags estratégicos**: `@smoke`, `@regression`, `@negative`, `@boundary`, `@happy-path`, `@[módulo]` en todos los escenarios.',
+    '✅ **Escalabilidad**: Arquitectura que permita agregar nuevos módulos sin modificar clases existentes.',
+  ].filter(Boolean);
+
+  return `## ✅ Mejores Prácticas Obligatorias (2026)
+
+${items.map(i=>`- ${i}`).join('\n')}`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER OUTPUT
+// ══════════════════════════════════════════════════════════════
+function renderOutput(prompt,cfg){
+  // Raw
+  document.getElementById('raw-prompt-content').textContent=prompt;
+  // Preview
+  document.getElementById('md-preview-content').innerHTML=markdownToHtml(prompt);
+  // Summary
+  renderSummary(cfg);
+}
+
+function renderSummary(cfg){
+  const cards=[
+    {label:'Proyecto',value:cfg.projectName,color:'accent'},
+    {label:'Lenguaje',value:getLangDisplay(cfg)},
+    {label:'BDD Framework',value:cfg.bddFramework+' '+cfg.bddVersion},
+    {label:'Test Runner',value:cfg.runner+' '+cfg.runnerVersion},
+    {label:'UI / API Tool',value:getUIToolDisplay(cfg)+' '+cfg.uiToolVersion},
+    {label:'Build Tool',value:getBuildDisplay(cfg)},
+    {label:'Tipo de App',value:getAppTypeDisplay(cfg)},
+    {label:'Reporting',value:getReportingDisplay(cfg)},
+    {label:'CI/CD',value:getCICDDisplay(cfg)},
+    {label:'Escenarios',value:cfg.scenarioTypes.join(', ')||'—'},
+    {label:'Máx. por Feature',value:cfg.maxScenarios+' escenarios'},
+    {label:'Paralelo',value:cfg.parallelExecution?'✅ Habilitado':'—'},
+    {label:'Retry',value:cfg.retryMechanism?'✅ Habilitado':'—'},
+    {label:'Multi-Ambiente',value:cfg.multiEnv?cfg.environments:'—'},
+  ];
+  let html='<div class="summary-cards">';
+  cards.forEach(c=>{
+    html+=`<div class="summary-card"><div class="summary-card-label">${c.label}</div><div class="summary-card-value">${escHtml(c.value)}</div></div>`;
+  });
+  html+='</div>';
+  // Special modules
+  const mods=[];
+  if(cfg.dataDriven) mods.push('📊 Data-Driven');
+  if(cfg.securityTesting) mods.push('🔒 Security (OWASP)');
+  if(cfg.contractTesting) mods.push('📜 Contract Testing');
+  if(cfg.schemaValidation) mods.push('✔️ Schema Validation');
+  if(cfg.accessibility) mods.push('♿ Accesibilidad');
+  if(mods.length>0){
+    html+='<p style="margin-top:12px;font-size:13px;color:var(--text-secondary)"><strong>Módulos especiales activos: </strong>'+mods.join(' · ')+'</p>';
+  }
+  document.getElementById('summary-content').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// COPY
+// ══════════════════════════════════════════════════════════════
+function copyPrompt(){
+  if(!window._lastPrompt) return;
+  navigator.clipboard.writeText(window._lastPrompt).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 Copiar Prompt';btn.classList.remove('copied');},2500);
+  }).catch(()=>{
+    // Fallback for environments where clipboard API is not available
+    const ta=document.createElement('textarea');
+    ta.value=window._lastPrompt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showAlert('✅ Prompt copiado al portapapeles','success');
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// MARKDOWN TO HTML (lightweight renderer)
+// ══════════════════════════════════════════════════════════════
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function markdownToHtml(md){
+  // Extract code blocks FIRST (before HTML escaping) to avoid double-encoding
+  const blocks=[];
+  let processed=md.replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>{
+    const idx=blocks.length;
+    blocks.push(`<pre><code class="lang-${escHtml(lang||'text')}">${escHtml(code)}</code></pre>`);
+    return `\x00BLOCK${idx}\x00`;
+  });
+  // Now HTML-escape the remaining markdown text (not code blocks)
+  let html=escHtml(processed);
+  // Inline code — content already escaped by escHtml above
+  html=html.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // Headings
+  html=html.replace(/^#### (.+)$/gm,'<h4>$1</h4>');
+  html=html.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  html=html.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  html=html.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  // HR
+  html=html.replace(/^---$/gm,'<hr>');
+  // Blockquote
+  html=html.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>');
+  // Bold+Italic
+  html=html.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
+  html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  html=html.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  // Tables
+  html=html.replace(/((?:\|.+\|\n)+)/g,m=>{
+    const rows=m.trim().split('\n').filter(Boolean);
+    if(rows.length<2) return m;
+    const isSep=r=>/^\|[-\s|:]+\|$/.test(r.trim());
+    let tbl='<table>';
+    rows.forEach((r,i)=>{
+      if(isSep(r)) return;
+      const isHeader=i===0;
+      const prevIsSep=rows[i+1]&&isSep(rows[i+1]);
+      const tag=(isHeader&&prevIsSep)?'th':'td';
+      if(isHeader&&prevIsSep) tbl+='<thead><tr>';
+      else if(i===2&&isSep(rows[1])) tbl+='<tbody><tr>';
+      else if(i>2) tbl+='<tr>';
+      else if(!isHeader) tbl+='<tbody><tr>';
+      const cells=r.split('|').filter((_,ci,a)=>ci>0&&ci<a.length-1);
+      cells.forEach(c=>{tbl+=`<${tag}>${c.trim()}</${tag}>`;});
+      if(isHeader&&prevIsSep) tbl+='</tr></thead>';
+      else tbl+='</tr>';
+    });
+    tbl+='</table>';
+    return tbl;
+  });
+  // Lists
+  html=html.replace(/^(\s*[-*+]) (.+)$/gm,'<li>$2</li>');
+  html=html.replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$1</ul>');
+  // Paragraphs (lines not already tagged)
+  const lines=html.split('\n');
+  const result=[];
+  for(let i=0;i<lines.length;i++){
+    const l=lines[i];
+    const trimmed=l.trim();
+    if(!trimmed) continue;
+    if(/^<(h[1-6]|ul|ol|li|blockquote|pre|table|thead|tbody|tr|th|td|hr)/.test(trimmed)||trimmed.startsWith('\x00BLOCK')){
+      result.push(trimmed);
+    }else{
+      result.push('<p>'+trimmed+'</p>');
     }
   }
-  let crc = 0xFFFFFFFF;
-  for (let i = 0; i < bytes.length; i++) crc = crc32._t[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
-  return (crc ^ 0xFFFFFFFF) >>> 0;
+  html=result.join('\n');
+  // Restore code blocks
+  blocks.forEach((b,i)=>{html=html.replace(new RegExp('(<p>)?\\x00BLOCK'+i+'\\x00(<\\/p>)?','g'),b);});
+  return html;
 }
-
-function createZip(files) {
-  const enc = new TextEncoder();
-  const entries = files.map(f => {
-    const nb = enc.encode(f.path);
-    const db = enc.encode(f.content);
-    const crc = crc32(db);
-    const now = new Date();
-    const dd = ((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
-    const dt = (now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>>1);
-    return { nb, db, crc, dd, dt };
-  });
-  const parts = [];
-  const offsets = [];
-  let offset = 0;
-
-  entries.forEach(e => {
-    offsets.push(offset);
-    const h = new Uint8Array(30 + e.nb.length);
-    const v = new DataView(h.buffer);
-    v.setUint32(0, 0x04034b50, true);
-    v.setUint16(4, 20, true); v.setUint16(6, 0, true); v.setUint16(8, 0, true);
-    v.setUint16(10, e.dt, true); v.setUint16(12, e.dd, true);
-    v.setUint32(14, e.crc, true);
-    v.setUint32(18, e.db.length, true); v.setUint32(22, e.db.length, true);
-    v.setUint16(26, e.nb.length, true); v.setUint16(28, 0, true);
-    h.set(e.nb, 30);
-    parts.push(h, e.db);
-    offset += h.length + e.db.length;
-  });
-
-  const cdOff = offset;
-  entries.forEach((e, i) => {
-    const cd = new Uint8Array(46 + e.nb.length);
-    const v = new DataView(cd.buffer);
-    v.setUint32(0, 0x02014b50, true);
-    v.setUint16(4, 20, true); v.setUint16(6, 20, true);
-    v.setUint16(8, 0, true); v.setUint16(10, 0, true);
-    v.setUint16(12, e.dt, true); v.setUint16(14, e.dd, true);
-    v.setUint32(16, e.crc, true);
-    v.setUint32(20, e.db.length, true); v.setUint32(24, e.db.length, true);
-    v.setUint16(28, e.nb.length, true);
-    v.setUint16(30, 0, true); v.setUint16(32, 0, true);
-    v.setUint16(34, 0, true); v.setUint16(36, 0, true);
-    v.setUint32(38, 0, true); v.setUint32(42, offsets[i], true);
-    cd.set(e.nb, 46);
-    parts.push(cd);
-    offset += cd.length;
-  });
-
-  const cdSize = offset - cdOff;
-  const eocd = new Uint8Array(22);
-  const ev = new DataView(eocd.buffer);
-  ev.setUint32(0, 0x06054b50, true);
-  ev.setUint16(4, 0, true); ev.setUint16(6, 0, true);
-  ev.setUint16(8, entries.length, true); ev.setUint16(10, entries.length, true);
-  ev.setUint32(12, cdSize, true); ev.setUint32(16, cdOff, true);
-  ev.setUint16(20, 0, true);
-  parts.push(eocd);
-
-  const total = parts.reduce((s, p) => s + p.length, 0);
-  const out = new Uint8Array(total);
-  let pos = 0;
-  parts.forEach(p => { out.set(p, pos); pos += p.length; });
-  return new Blob([out], { type: 'application/zip' });
-}
-
-function downloadZip() {
-  if (!window._generatedFiles || !window._generatedFiles.length) return;
-  const blob = createZip(window._generatedFiles);
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = ((window._generatedConfig && window._generatedConfig.projectName) || 'qa-project') + '.zip';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showAlert('\u2705 ZIP descargado exitosamente', 'success');
-}
-
 </script>
 </body>
 </html>
